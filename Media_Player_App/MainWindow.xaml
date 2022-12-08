@@ -3,10 +3,224 @@
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:hc="https://handyorg.github.io/handycontrol"
+        xmlns:Icon="http://metro.mahapps.com/winfx/xaml/iconpacks"
         xmlns:local="clr-namespace:Media_Player_App"
         mc:Ignorable="d"
-        Title="MainWindow" Height="450" Width="800">
-    <Grid>
+        Loaded="Window_Loaded"
+        ResizeMode="CanResizeWithGrip"
+        Icon="./Images/icon.png"
+        Title="Media Player" MinHeight="550" MinWidth="1360">
+    <DockPanel LastChildFill="True" Margin="10px">
 
-    </Grid>
+        <StackPanel Orientation ="Horizontal" VerticalAlignment="Center" DockPanel.Dock="Top" Background="White">
+            
+        </StackPanel>
+        <DockPanel LastChildFill="True">
+            <DockPanel DockPanel.Dock="Left" LastChildFill="True" Margin="0, 0, 5, 0">
+                <StackPanel Orientation="Horizontal" HorizontalAlignment="Stretch" VerticalAlignment="Center" Margin="5,0,0,0"
+                           DockPanel.Dock="Top">
+                    <TextBlock VerticalAlignment="Center"  Text="Select Playlist: " Width="80"/>
+                    <hc:ComboBox Name="PlaylistComboBox" Width="293" hc:InfoElement.Placeholder="Select Playlist" SelectionChanged="PlaylistComboBox_SelectionChanged" HorizontalAlignment="Stretch" Margin="5px" VerticalContentAlignment="Center"/>
+                </StackPanel>
+                <DockPanel HorizontalAlignment="Stretch" VerticalAlignment="Center" Margin="0,0,0,5"
+                            DockPanel.Dock="Top">
+                    <Button Cursor="Hand" Name="New_File_Button" Click="New_File_Button_Click" Margin="5px" DockPanel.Dock="Left">
+                        <StackPanel Orientation ="Horizontal" VerticalAlignment="Center">
+                            <Image Source="./Images/add.png" Margin="0,0,10,0" RenderOptions.BitmapScalingMode="HighQuality"/>
+                            <TextBlock Text="New File Media"/>
+                        </StackPanel>
+                    </Button>
+                    <Button Cursor="Hand" Name="Clear_All_Playlist_Btn" Click="Clear_All_Playlist_Btn_Click" Margin="5px" DockPanel.Dock="Right" HorizontalAlignment="Right">
+                        <StackPanel Orientation ="Horizontal" VerticalAlignment="Center">
+                            <Image Source="images/dustbin.png" Margin="0,0,5,0" RenderOptions.BitmapScalingMode="HighQuality"/>
+                            <TextBlock Text="Clear All Playlist"/>
+                        </StackPanel>
+                    </Button>
+                </DockPanel>
+                <StackPanel Orientation="Horizontal" HorizontalAlignment="Stretch" VerticalAlignment="Center" Margin="5,0,0,0"
+                            DockPanel.Dock="Bottom">
+                    <TextBlock VerticalAlignment="Center" Text="New Playlist: " Width="80"/>
+                    <TextBox x:Name="AddPlaylist" Width="203" Margin="5px" />
+                    <Button Cursor="Hand" Name="Add_Playlist_Button" Click="Add_Playlist_Button_CLick" Margin="5px" Width="80">
+                        <StackPanel Orientation ="Horizontal" VerticalAlignment="Center" HorizontalAlignment="Left">
+                            <Image Source="Images/save.png" Margin="0,0,5,0" RenderOptions.BitmapScalingMode="HighQuality"/>
+                            <TextBlock Text="Save"/>
+                        </StackPanel>
+                    </Button>
+                </StackPanel>
+                <ListView 
+                SelectionMode="Multiple"
+                SelectionChanged="PlayList_SelectionChanged" 
+                Margin="5,0,5,0"
+                Name="Playlists"
+                ScrollViewer.HorizontalScrollBarVisibility="Disabled"
+                ScrollViewer.VerticalScrollBarVisibility="Auto">
+                    <ListView.Resources>
+                        <!--Layout for Default Item-->
+                        <DataTemplate x:Key="DefaultItemTemplate">
+                            <StackPanel x:Name="RuleRow" Width="310" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Background="White">
+                                <Grid Height="30" Width="310">
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition  Width="*"/>
+                                        <ColumnDefinition  Width="2*"/>
+                                        <ColumnDefinition  Width="5*"/>
+                                        <ColumnDefinition  Width="*"/>
+                                    </Grid.ColumnDefinitions>
+                                    <Image Grid.Column="0" Width="20" Height="20" VerticalAlignment="Center" Source="/Images/play.png" HorizontalAlignment="Center" RenderOptions.BitmapScalingMode="HighQuality"/>
+                                    <Image Grid.Column="1" Width="20" Height="20" VerticalAlignment="Center" Source="{Binding ImagePath}" HorizontalAlignment="Center" RenderOptions.BitmapScalingMode="HighQuality"/>
+                                    <StackPanel Grid.Column="2"  Orientation="Vertical" VerticalAlignment="Center" HorizontalAlignment="Left" Margin="5 0 0 0">
+                                        <TextBlock  TextWrapping="Wrap" VerticalAlignment="Center" Height="20" HorizontalAlignment="Left" Margin="0 0 0 5"><Run Text="{Binding Name}" FontSize="16"/></TextBlock>
+                                        <TextBlock  TextWrapping="Wrap" VerticalAlignment="Center" Height="20" HorizontalAlignment="Left" ><Run Text="{Binding Singer}" FontSize="16"/></TextBlock>
+                                    </StackPanel>
+                                    <Button x:Name="Remove_File_Button" CommandParameter="{Binding}" Click="Remove_File_Button_Click" Grid.Column="3" Width="20" Cursor="Hand" Padding="3,3,3,3" VerticalAlignment="Center" BorderThickness="0" Background="Transparent" HorizontalAlignment="Center">
+                                        <Button.Style>
+                                            <Style TargetType="{x:Type Button}">
+                                                <Setter Property="Background" Value="Transparent"/>
+                                                <Setter Property="Template">
+                                                    <Setter.Value>
+                                                        <ControlTemplate TargetType="{x:Type Button}">
+                                                            <Border Background="{TemplateBinding Background}" BorderBrush="Black" BorderThickness="0">
+                                                                <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                                                            </Border>
+                                                        </ControlTemplate>
+                                                    </Setter.Value>
+                                                </Setter>
+                                                <Style.Triggers>
+                                                    <Trigger Property="IsMouseOver" Value="True">
+                                                        <Setter Property="Background" Value="Transparent"/>
+                                                    </Trigger>
+                                                </Style.Triggers>
+                                            </Style>
+                                        </Button.Style>
+                                        <Image Source="/Images/dustbin.png" RenderOptions.BitmapScalingMode="HighQuality"/>
+                                    </Button>
+                                </Grid>
+                            </StackPanel>
+                        </DataTemplate>
+
+                        <!--Layout for Selected Item-->
+                        <DataTemplate x:Key="SelectedItemTemplate">
+                            <StackPanel x:Name="RuleRow" Width="310" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Background="#EEEEEE">
+                                <Grid Height="30" Width="310">
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition  Width="*"/>
+                                        <ColumnDefinition  Width="2*"/>
+                                        <ColumnDefinition  Width="5*"/>
+                                        <ColumnDefinition  Width="*"/>
+                                    </Grid.ColumnDefinitions>
+                                    <Image Grid.Column="0" Width="20" Height="20" VerticalAlignment="Center" Source="/Images/pause.png" HorizontalAlignment="Center" RenderOptions.BitmapScalingMode="HighQuality"/>
+                                    <Image Grid.Column="1" Width="20" Height="20" VerticalAlignment="Center" Source="{Binding ImagePath}" HorizontalAlignment="Center" RenderOptions.BitmapScalingMode="HighQuality"/>
+                                    <StackPanel Grid.Column="2"  Orientation="Vertical" VerticalAlignment="Center" HorizontalAlignment="Left" Margin="5 0 0 0">
+                                        <TextBlock  TextWrapping="Wrap" VerticalAlignment="Center" Height="20" HorizontalAlignment="Left" Margin="0 0 0 5" ><Run Text="{Binding Name}" FontSize="16"/></TextBlock>
+                                        <TextBlock  TextWrapping="Wrap" VerticalAlignment="Center" Height="20" HorizontalAlignment="Left" ><Run Text="{Binding Singer}" FontSize="16"/></TextBlock>
+                                    </StackPanel>
+                                    <Button x:Name="Remove_File_Button" CommandParameter="{Binding}" Click="Remove_File_Button_Click" Grid.Column="3" Width="20" Cursor="Hand" Padding="3,3,3,3" VerticalAlignment="Center" BorderThickness="0" Background="Transparent" HorizontalAlignment="Center">
+                                        <Button.Style>
+                                            <Style TargetType="{x:Type Button}">
+                                                <Setter Property="Background" Value="Transparent"/>
+                                                <Setter Property="Template">
+                                                    <Setter.Value>
+                                                        <ControlTemplate TargetType="{x:Type Button}">
+                                                            <Border Background="{TemplateBinding Background}" BorderBrush="Black" BorderThickness="0">
+                                                                <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                                                            </Border>
+                                                        </ControlTemplate>
+                                                    </Setter.Value>
+                                                </Setter>
+                                                <Style.Triggers>
+                                                    <Trigger Property="IsMouseOver" Value="True">
+                                                        <Setter Property="Background" Value="Transparent"/>
+                                                    </Trigger>
+                                                </Style.Triggers>
+                                            </Style>
+                                        </Button.Style>
+                                        <Image Source="/Images/dustbin.png" RenderOptions.BitmapScalingMode="HighQuality"/>
+                                    </Button>
+                                </Grid>
+                            </StackPanel>
+                        </DataTemplate>
+                    </ListView.Resources>
+                    <ListView.Background>
+                        <SolidColorBrush Color="#FFBDDDFF"/>
+                    </ListView.Background>
+                    <ListView.ItemContainerStyle>
+                        <Style TargetType="ListBoxItem">
+                            <Setter Property="HorizontalContentAlignment" Value="Stretch"/>
+                            <Setter Property="Padding" Value="5"/>
+                            <Setter Property="Margin" Value="0,0,0,0"/>
+                            <Setter Property="MinHeight" Value="40"/>
+                            <Setter Property="MaxHeight" Value="40"/>
+                            <Setter Property="VerticalContentAlignment" Value="Top"/>
+                            <Setter Property="ContentTemplate" Value="{StaticResource DefaultItemTemplate}" />
+                            <Setter Property="Background" Value="White"/>
+                            <Setter Property="AllowDrop" Value="true"/>
+                            <EventSetter Event="PreviewMouseLeftButtonDown" Handler="ListBoxItem_MouseLeftButtonDown"/>
+                            <EventSetter Event="PreviewMouseLeftButtonUp" Handler="ListBoxItem_MouseLeftButtonUp"/>
+                            <EventSetter Event="PreviewMouseMove" Handler="ListBoxItem_MouseMove"/>
+                            <EventSetter Event="Drop" Handler="ListBoxItem_Drop"/>
+                            <EventSetter Event="PreviewMouseRightButtonDown"  Handler="OnPreviewMouseDown"/>
+                            <Style.Triggers>
+                                <Trigger Property="IsSelected"  Value="True">
+                                    <Setter Property="ContentTemplate" Value="{StaticResource SelectedItemTemplate}" />
+                                </Trigger>
+                            </Style.Triggers>
+                        </Style>
+
+                    </ListView.ItemContainerStyle>
+                </ListView>
+            </DockPanel>
+            <Grid DockPanel.Dock="Right">
+                <Grid.RowDefinitions>
+                    <RowDefinition  Height="*"/>
+                    <RowDefinition  Height="80"/>
+                </Grid.RowDefinitions>
+                <DockPanel DockPanel.Dock="Top" Grid.Row="0"></DockPanel>
+                <Grid Grid.Row="1" VerticalAlignment="Center" Background="#FFBDDDFF" Height="80" Margin="0 0 0 5">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition  Width="*"/>
+                        <ColumnDefinition  Width="2*"/>
+                        <ColumnDefinition  Width="*"/>
+                    </Grid.ColumnDefinitions>
+                    <StackPanel Orientation="Horizontal" Grid.Column="0">
+                        <Ellipse Grid.Column="0" Width="40" Height="40" Margin="5px">
+                            <Ellipse.Fill>
+                                <ImageBrush ImageSource="{Binding ImagePath}" RenderOptions.BitmapScalingMode="HighQuality"/>
+                            </Ellipse.Fill>
+                        </Ellipse>
+                        
+                        <StackPanel Grid.Column="1"  Orientation="Vertical" VerticalAlignment="Center" HorizontalAlignment="Left" Margin="5 0 0 0">
+                            <TextBlock VerticalAlignment="Center" HorizontalAlignment="Left" Margin="0 0 0 5" ><Run Foreground="White" d:Text="Yeu em hon da tung" Text="{Binding Name}" FontSize="16"/></TextBlock>
+                            <TextBlock VerticalAlignment="Center" HorizontalAlignment="Left" ><Run Foreground="#FFE4F9FF" FontWeight="SemiBold" d:Text="fsdfsd" Text="{Binding Singer}" FontSize="14"/></TextBlock>
+                        </StackPanel>
+                    </StackPanel>
+
+                    <StackPanel Grid.Column="1" HorizontalAlignment="Center" VerticalAlignment="Center">
+                        <StackPanel Orientation="Horizontal" VerticalAlignment="Center" HorizontalAlignment="Center">
+                            <Button Name="Previous_Button" Click="Previous_Button_CLick" Style="{StaticResource playerButton}">
+                                <Icon:PackIconMaterial Kind="SkipPrevious" Style="{StaticResource playerButtonIcon}"/>
+                            </Button>
+                            <Button Name="Play_Button" Click="Play_Button_CLick" Style="{StaticResource playerButton}">
+                                <Icon:PackIconMaterial Kind="Pause" Style="{StaticResource playerButtonIcon}"/>
+                            </Button>
+                            <Button Name="Next_Button" Click="Next_Button_CLick" Style="{StaticResource playerButton}">
+                                <Icon:PackIconMaterial Kind="SkipNext" Style="{StaticResource playerButtonIcon}"/>
+                            </Button>
+                        </StackPanel>
+                        <StackPanel Orientation="Horizontal" Margin=" 0 0 0 5">
+                            <TextBlock Width="50" Text="{Binding RunTime}" d:Text="00:01" TextAlignment="Right"></TextBlock>
+                            <Slider x:Name="slider" VerticalAlignment="Center" Width="380" IsSelectionRangeEnabled="True" Value="5" SelectionEnd="{Binding ElementName=slider, Path=Value}" />
+                            <TextBlock Width="50" Text="{Binding EndTime}" d:Text="03:05:31" TextAlignment="Left"></TextBlock>
+                        </StackPanel>
+                    </StackPanel>
+
+                    <StackPanel Grid.Column="2" HorizontalAlignment="Right" VerticalAlignment="Center">
+                        <Button Name="Shuffle_Button" Click="Shuffle_Button_CLick" Style="{StaticResource playerButton}" Margin="0 0 10 0">
+                            <Icon:PackIconMaterial Kind="Shuffle" Style="{StaticResource playerButtonIcon}" Height="20" Width="20"/>
+                        </Button>
+                    </StackPanel>
+                </Grid>
+            </Grid>
+        </DockPanel>
+    </DockPanel>
 </Window>
