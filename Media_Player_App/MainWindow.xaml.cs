@@ -40,7 +40,7 @@ namespace Media_Player_App
 
         }
 
-        private void Clear_All_Playlist_Btn_Click(object sender, RoutedEventArgs e)
+        private void Clear_All_Files_In_Playlist_Btn_Click(object sender, RoutedEventArgs e)
         {
 
         }

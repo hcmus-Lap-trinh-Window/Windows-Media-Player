@@ -31,10 +31,10 @@
                             <TextBlock Text="New File Media"/>
                         </StackPanel>
                     </Button>
-                    <Button Cursor="Hand" Name="Clear_All_Playlist_Btn" Click="Clear_All_Playlist_Btn_Click" Margin="5px" DockPanel.Dock="Right" HorizontalAlignment="Right">
+                    <Button Cursor="Hand" Name="Clear_All_File_In_Playlist_Btn" Click="Clear_All_Files_In_Playlist_Btn_Click" Margin="5px" DockPanel.Dock="Right" HorizontalAlignment="Right">
                         <StackPanel Orientation ="Horizontal" VerticalAlignment="Center">
                             <Image Source="images/dustbin.png" Margin="0,0,5,0" RenderOptions.BitmapScalingMode="HighQuality"/>
-                            <TextBlock Text="Clear All Playlist"/>
+                            <TextBlock Text="Clear All Files"/>
                         </StackPanel>
                     </Button>
                 </DockPanel>
@@ -175,7 +175,9 @@
                     <RowDefinition  Height="*"/>
                     <RowDefinition  Height="80"/>
                 </Grid.RowDefinitions>
-                <DockPanel DockPanel.Dock="Top" Grid.Row="0"></DockPanel>
+                <DockPanel DockPanel.Dock="Top" Grid.Row="0">
+                    <MediaElement Name="media"></MediaElement>
+                </DockPanel>
                 <Grid Grid.Row="1" VerticalAlignment="Center" Background="#FFBDDDFF" Height="80" Margin="0 0 0 5">
                     <Grid.ColumnDefinitions>
                         <ColumnDefinition  Width="*"/>
@@ -190,8 +192,8 @@
                         </Ellipse>
                         
                         <StackPanel Grid.Column="1"  Orientation="Vertical" VerticalAlignment="Center" HorizontalAlignment="Left" Margin="5 0 0 0">
-                            <TextBlock VerticalAlignment="Center" HorizontalAlignment="Left" Margin="0 0 0 5" ><Run Foreground="White" d:Text="Yeu em hon da tung" Text="{Binding Name}" FontSize="16"/></TextBlock>
-                            <TextBlock VerticalAlignment="Center" HorizontalAlignment="Left" ><Run Foreground="#FFE4F9FF" FontWeight="SemiBold" d:Text="fsdfsd" Text="{Binding Singer}" FontSize="14"/></TextBlock>
+                            <TextBlock TextWrapping="WrapWithOverflow" VerticalAlignment="Center" HorizontalAlignment="Left" Margin="0 0 0 5" ><Run Foreground="White" d:Text="Yeu em hon da tung" Text="{Binding Name}" FontSize="16"/></TextBlock>
+                            <TextBlock TextWrapping="WrapWithOverflow" VerticalAlignment="Center" HorizontalAlignment="Left" ><Run Foreground="#FFE4F9FF" FontWeight="SemiBold" d:Text="fsdfsd" Text="{Binding Singer}" FontSize="14"/></TextBlock>
                         </StackPanel>
                     </StackPanel>
 
