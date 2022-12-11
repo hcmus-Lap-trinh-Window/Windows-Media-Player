@@ -1,6 +1,8 @@
-﻿using System;
+﻿using Microsoft.Win32;
+using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Numerics;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows;
@@ -12,6 +14,7 @@ using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
+using System.Windows.Threading;
 
 namespace Media_Player_App
 {
@@ -32,7 +35,21 @@ namespace Media_Player_App
 
         private void New_File_Button_Click(object sender, RoutedEventArgs e)
         {
+            var screen = new OpenFileDialog();
+            if (screen.ShowDialog() == true)
+            {
+                var _currentPlaying = screen.FileName;
+                //this.Title = $"Opened: {_shortName}";
+                media.Source = new Uri(_currentPlaying, UriKind.Absolute);
+                media.Play();
+                //media.Stop();
 
+                //_timer = new DispatcherTimer();
+                //_timer.Interval = new TimeSpan(0, 0, 0, 1, 0); ;
+                //_timer.Tick += _timer_Tick;
+
+
+            }
         }
 
         private void PlaylistComboBox_SelectionChanged(object sender, SelectionChangedEventArgs e)

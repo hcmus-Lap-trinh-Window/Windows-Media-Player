@@ -176,7 +176,7 @@
                     <RowDefinition  Height="80"/>
                 </Grid.RowDefinitions>
                 <DockPanel DockPanel.Dock="Top" Grid.Row="0">
-                    <MediaElement Name="media"></MediaElement>
+                    <MediaElement Name="media" LoadedBehavior="Manual"></MediaElement>
                 </DockPanel>
                 <Grid Grid.Row="1" VerticalAlignment="Center" Background="#FFBDDDFF" Height="80" Margin="0 0 0 5">
                     <Grid.ColumnDefinitions>
