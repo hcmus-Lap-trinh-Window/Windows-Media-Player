@@ -203,7 +203,7 @@
                                 <Icon:PackIconMaterial Kind="SkipPrevious" Style="{StaticResource playerButtonIcon}"/>
                             </Button>
                             <Button Name="Play_Button" Click="Play_Button_CLick" Style="{StaticResource playerButton}">
-                                <Icon:PackIconMaterial Kind="Pause" Style="{StaticResource playerButtonIcon}"/>
+                                <Icon:PackIconMaterial Name="IsPlaying" Kind="Pause" Style="{StaticResource playerButtonIcon}"/>
                             </Button>
                             <Button Name="Next_Button" Click="Next_Button_CLick" Style="{StaticResource playerButton}">
                                 <Icon:PackIconMaterial Kind="SkipNext" Style="{StaticResource playerButtonIcon}"/>

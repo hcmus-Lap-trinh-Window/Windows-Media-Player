@@ -1,20 +1,10 @@
 ﻿using Microsoft.Win32;
 using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Numerics;
-using System.Text;
-using System.Threading.Tasks;
+using System.IO;
 using System.Windows;
 using System.Windows.Controls;
-using System.Windows.Data;
-using System.Windows.Documents;
 using System.Windows.Input;
-using System.Windows.Media;
-using System.Windows.Media.Imaging;
-using System.Windows.Navigation;
-using System.Windows.Shapes;
-using System.Windows.Threading;
 
 namespace Media_Player_App
 {
@@ -23,9 +13,11 @@ namespace Media_Player_App
     /// </summary>
     public partial class MainWindow : Window
     {
+        private bool isPlaying = false;
         public MainWindow()
         {
             InitializeComponent();
+            isPlaying= true;
         }
 
         private void Window_Loaded(object sender, RoutedEventArgs e)
@@ -47,8 +39,6 @@ namespace Media_Player_App
                 //_timer = new DispatcherTimer();
                 //_timer.Interval = new TimeSpan(0, 0, 0, 1, 0); ;
                 //_timer.Tick += _timer_Tick;
-
-
             }
         }
 
@@ -109,7 +99,27 @@ namespace Media_Player_App
 
         private void Play_Button_CLick(object sender, RoutedEventArgs e)
         {
-
+            try
+            {
+                if (media.Source != null)
+                {
+                    if (isPlaying)
+                    {
+                        media.Pause();
+                        isPlaying = false;
+                        IsPlaying.Kind = MahApps.Metro.IconPacks.PackIconMaterialKind.Play;
+                    }
+                    else
+                    {
+                        media.Play();
+                        isPlaying = true;
+                        IsPlaying.Kind = MahApps.Metro.IconPacks.PackIconMaterialKind.Pause;
+                    }
+                }
+            }
+            catch(Exception ex) {
+                throw new Exception(ex.Message, ex.InnerException?? ex);
+            }
         }
 
         private void Next_Button_CLick(object sender, RoutedEventArgs e)
