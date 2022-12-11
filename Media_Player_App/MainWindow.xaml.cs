@@ -39,16 +39,10 @@ namespace Media_Player_App
             if (screen.ShowDialog() == true)
             {
                 var _currentPlaying = screen.FileName;
-                //this.Title = $"Opened: {_shortName}";
+
                 media.Source = new Uri(_currentPlaying, UriKind.Absolute);
                 media.Play();
                 //media.Stop();
-
-                //_timer = new DispatcherTimer();
-                //_timer.Interval = new TimeSpan(0, 0, 0, 1, 0); ;
-                //_timer.Tick += _timer_Tick;
-
-
             }
         }
 
