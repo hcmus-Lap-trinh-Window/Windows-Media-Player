@@ -10,7 +10,7 @@
         Loaded="Window_Loaded"
         ResizeMode="CanResizeWithGrip"
         Icon="./Images/icon.png"
-        Title="Media Player" MinHeight="550" MinWidth="1360">
+        Title="Media Player" MinHeight="650" MinWidth="1360">
     <DockPanel LastChildFill="True" Margin="10px">
 
         <StackPanel Orientation ="Horizontal" VerticalAlignment="Center" DockPanel.Dock="Top" Background="White">
@@ -172,13 +172,54 @@
             </DockPanel>
             <Grid DockPanel.Dock="Right">
                 <Grid.RowDefinitions>
+                    <RowDefinition  Height="68"/>
                     <RowDefinition  Height="*"/>
                     <RowDefinition  Height="80"/>
                 </Grid.RowDefinitions>
-                <DockPanel DockPanel.Dock="Top" Grid.Row="0">
-                    <MediaElement Name="media" LoadedBehavior="Manual"></MediaElement>
+                <DockPanel Height="68" Grid.Row="0"  VerticalAlignment="Center">
+                    <StackPanel DockPanel.Dock="Left" VerticalAlignment="Center">
+                        <TextBlock Text="Welcome to our media player app!"></TextBlock>
+                        <StackPanel Orientation="Horizontal" Margin="0 5 0 0">
+                            <TextBlock Text="Ready to enjoy your music? " FontSize="16" FontWeight="DemiBold"></TextBlock>
+                            <Image Source="Images/musical.png" Height="25" RenderOptions.BitmapScalingMode="HighQuality"/>
+                        </StackPanel>
+                    </StackPanel>
+                    <StackPanel DockPanel.Dock="Right" HorizontalAlignment="Right" VerticalAlignment="Center">
+                        <StackPanel Orientation="Horizontal">
+                            <StackPanel Orientation="Horizontal" VerticalAlignment="Center" HorizontalAlignment="Center" Margin="5 0 5 0">
+                                <Ellipse Stroke="Black" Grid.Column="0" Width="40" Height="40" Margin="5px">
+                                    <Ellipse.Fill>
+                                        <ImageBrush ImageSource="./Images/thanh.png" RenderOptions.BitmapScalingMode="HighQuality"/>
+                                    </Ellipse.Fill>
+                                </Ellipse>
+                                <TextBlock TextAlignment="Center" VerticalAlignment="Center" HorizontalAlignment="Center"><Run Text="Thành" /></TextBlock>
+                            </StackPanel>
+                            <StackPanel Orientation="Horizontal" VerticalAlignment="Center" HorizontalAlignment="Center" Margin="5 0 5 0">
+                                <Ellipse Stroke="Black" Grid.Column="0" Width="40" Height="40" Margin="5px">
+                                    <Ellipse.Fill>
+                                        <ImageBrush ImageSource="./Images/khanh.png" RenderOptions.BitmapScalingMode="HighQuality"/>
+                                    </Ellipse.Fill>
+                                </Ellipse>
+                                <TextBlock TextAlignment="Center" VerticalAlignment="Center" HorizontalAlignment="Center"><Run Text="Khanh" /></TextBlock>
+                            </StackPanel>
+                            <StackPanel Orientation="Horizontal" VerticalAlignment="Center" HorizontalAlignment="Center" Margin="5 0 5 0">
+                                <Ellipse Stroke="Black" Grid.Column="0" Width="40" Height="40" Margin="5px">
+                                    <Ellipse.Fill>
+                                        <ImageBrush ImageSource="./Images/duy.png" RenderOptions.BitmapScalingMode="HighQuality"/>
+                                    </Ellipse.Fill>
+                                </Ellipse>
+                                <TextBlock TextAlignment="Center" VerticalAlignment="Center" HorizontalAlignment="Center"><Run Text="Duy" /></TextBlock>
+                            </StackPanel>
+                        </StackPanel>
+                    </StackPanel>
                 </DockPanel>
-                <Grid Grid.Row="1" VerticalAlignment="Center" Background="#FFBDDDFF" Height="80" Margin="0 0 0 5">
+                <DockPanel DockPanel.Dock="Top" Grid.Row="1" HorizontalAlignment="Stretch" >
+                    <Border BorderBrush="white" BorderThickness="1" Background="#FFBDDDFF">
+                        <MediaElement Name="media" LoadedBehavior="Manual" VerticalAlignment="Center" HorizontalAlignment="Stretch"></MediaElement>
+                    </Border>
+                </DockPanel>
+                <Border Grid.Row="2" BorderBrush="white" BorderThickness="1,0,1,1">
+                    <Grid  VerticalAlignment="Center" Background="#FFBDDDFF" Height="80" Margin="0 0 0 5">
                     <Grid.ColumnDefinitions>
                         <ColumnDefinition  Width="*"/>
                         <ColumnDefinition  Width="2*"/>
@@ -222,6 +263,7 @@
                         </Button>
                     </StackPanel>
                 </Grid>
+                </Border>
             </Grid>
         </DockPanel>
     </DockPanel>

@@ -12,17 +12,13 @@
     <None Remove="Images\add-playlist.png" />
     <None Remove="Images\add.png" />
     <None Remove="Images\dustbin.png" />
-    <None Remove="Images\duy.png" />
     <None Remove="Images\icon.png" />
-    <None Remove="Images\khanh.png" />
-    <None Remove="Images\musical.png" />
     <None Remove="Images\next.png" />
     <None Remove="Images\pause.png" />
     <None Remove="Images\play.png" />
     <None Remove="Images\previous.png" />
     <None Remove="Images\save.png" />
     <None Remove="Images\shuffle.png" />
-    <None Remove="Images\thanh.png" />
   </ItemGroup>
 
   <ItemGroup>
@@ -35,16 +31,7 @@
     <Content Include="Images\dustbin.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="Images\duy.png">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
     <Content Include="Images\icon.png">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
-    <Content Include="Images\khanh.png">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
-    <Content Include="Images\musical.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
     <Content Include="Images\next.png">
@@ -63,9 +50,6 @@
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
     <Content Include="Images\shuffle.png">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
-    <Content Include="Images\thanh.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
   </ItemGroup>
