@@ -67,7 +67,7 @@
                                         <ColumnDefinition  Width="5*"/>
                                         <ColumnDefinition  Width="*"/>
                                     </Grid.ColumnDefinitions>
-                                    <Image Grid.Column="0" Width="20" Height="20" VerticalAlignment="Center" Source="/Images/play.png" HorizontalAlignment="Center" RenderOptions.BitmapScalingMode="HighQuality"/>
+                                    <Image Grid.Column="0" Width="20" Height="20" VerticalAlignment="Center" Source="/Images/play.png" HorizontalAlignment="Center" RenderOptions.BitmapScalingMode="HighQuality"/> <!---->
                                     <Image Grid.Column="1" Width="20" Height="20" VerticalAlignment="Center" Source="{Binding ImagePath}" HorizontalAlignment="Center" RenderOptions.BitmapScalingMode="HighQuality"/>
                                     <StackPanel Grid.Column="2"  Orientation="Vertical" VerticalAlignment="Center" HorizontalAlignment="Left" Margin="5 0 0 0">
                                         <TextBlock  TextWrapping="Wrap" VerticalAlignment="Center" Height="20" HorizontalAlignment="Left" Margin="0 0 0 5"><Run Text="{Binding Name}" FontSize="16"/></TextBlock>
@@ -215,7 +215,7 @@
                 </DockPanel>
                 <DockPanel DockPanel.Dock="Top" Grid.Row="1" HorizontalAlignment="Stretch" >
                     <Border BorderBrush="white" BorderThickness="1" Background="#FFBDDDFF">
-                        <MediaElement Name="media" LoadedBehavior="Manual" VerticalAlignment="Center" HorizontalAlignment="Stretch"></MediaElement>
+                        <MediaElement Name="media" MediaEnded="media_MediaEnded" LoadedBehavior="Manual" VerticalAlignment="Center" HorizontalAlignment="Stretch"></MediaElement>
                     </Border>
                 </DockPanel>
                 <Border Grid.Row="2" BorderBrush="white" BorderThickness="1,0,1,1">
@@ -259,7 +259,7 @@
 
                     <StackPanel Grid.Column="2" HorizontalAlignment="Right" VerticalAlignment="Center">
                         <Button Name="Shuffle_Button" Click="Shuffle_Button_CLick" Style="{StaticResource playerButton}" Margin="0 0 10 0">
-                            <Icon:PackIconMaterial Kind="Shuffle" Style="{StaticResource playerButtonIcon}" Height="20" Width="20"/>
+                            <Icon:PackIconMaterial x:Name="IsSuffle" Kind="Shuffle" Style="{StaticResource playerButtonIcon}" Height="20" Width="20"/>
                         </Button>
                     </StackPanel>
                 </Grid>
