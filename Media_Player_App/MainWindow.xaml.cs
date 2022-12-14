@@ -61,11 +61,13 @@ namespace Media_Player_App
                     Name = fileInfo.Name,
                     Singer = "Truong Cong Thanh",
                     ImagePath = Directory.GetCurrentDirectory() + @"/Images/thanh.png",
-                    FullPath = new Uri(_currentPlaying)
+                    FullPath = new Uri(_currentPlaying),
                 };
                 var isDuplicate = _PlayLists.Where(c => c.FullPath == newMedia.FullPath && c.Name == newMedia.Name).ToArray();
                 if (isDuplicate == null || isDuplicate.Length <= 0)
                 {
+                    // we have the flow: -> load file -> if not duplicate -> add to playlist -> play the newest song, update button in UI -> set CurrentMedia = new song
+                    // -> set selected item in playlist = new song
                     _PlayLists.Add(newMedia);
                     media.Source = new Uri(_currentPlaying, UriKind.Absolute);
                     #region set change in UI
@@ -76,9 +78,7 @@ namespace Media_Player_App
                     #endregion
                     CurrentMedia = newMedia;
                     #region set selected item in playlist
-                    //isMediaNewFile = true;
                     Playlists.SelectedItem = newMedia;
-                    //isMediaNewFile = false;
                     #endregion
                 }
             }
@@ -293,7 +293,23 @@ namespace Media_Player_App
 
         private void Next_Button_CLick(object sender, RoutedEventArgs e)
         {
-            
+            var currentMediaIndex = Playlists.SelectedIndex;
+            int mediaIndex = -1;
+
+            if (isMediaSuffle)
+            {
+                Random randInt = new Random();
+                mediaIndex = randInt.Next(0, _PlayLists.Count);
+                while (currentMediaIndex == mediaIndex)
+                {
+                    mediaIndex = randInt.Next(0, _PlayLists.Count);
+                }
+            }
+            else
+            {
+                mediaIndex = currentMediaIndex++;
+            }
+            Playlists.SelectedIndex = mediaIndex;
         }
 
         private void Shuffle_Button_CLick(object sender, RoutedEventArgs e)
@@ -340,11 +356,7 @@ namespace Media_Player_App
             {
                 mediaIndex = currentMediaIndex++;
             }
-            if (mediaIndex != -1)
-            {
-                media.Source = _PlayLists[mediaIndex].FullPath;
-                media.Play();
-            }
+            Playlists.SelectedIndex = mediaIndex;
         }
     }
 }

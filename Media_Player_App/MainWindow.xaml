@@ -55,7 +55,7 @@
                 Margin="5,0,5,0"
                 Name="Playlists"
                 ScrollViewer.HorizontalScrollBarVisibility="Disabled"
-                ScrollViewer.VerticalScrollBarVisibility="Auto">
+                ScrollViewer.VerticalScrollBarVisibility="Auto" d:ItemsSource="{d:SampleData ItemCount=5}">
                     <ListView.Resources>
                         <!--Layout for Default Item-->
                         <DataTemplate x:Key="DefaultItemTemplate">
@@ -233,7 +233,7 @@
                         </Ellipse>
                         
                         <StackPanel Grid.Column="1"  Orientation="Vertical" VerticalAlignment="Center" HorizontalAlignment="Left" Margin="5 0 0 0">
-                            <TextBlock TextWrapping="WrapWithOverflow" VerticalAlignment="Center" HorizontalAlignment="Left" Margin="0 0 0 5" ><Run Foreground="White" d:Text="Yeu em hon da tung" Text="{Binding Name}" FontSize="16"/></TextBlock>
+                                <TextBlock TextWrapping="WrapWithOverflow" VerticalAlignment="Center" HorizontalAlignment="Left" Margin="0 0 0 5" ><Run Foreground="White" d:Text="Yeu em hon da tung" Text="{Binding Name}" FontSize="16"/></TextBlock>
                             <TextBlock TextWrapping="WrapWithOverflow" VerticalAlignment="Center" HorizontalAlignment="Left" ><Run Foreground="#FFE4F9FF" FontWeight="SemiBold" d:Text="fsdfsd" Text="{Binding Singer}" FontSize="14"/></TextBlock>
                         </StackPanel>
                     </StackPanel>
