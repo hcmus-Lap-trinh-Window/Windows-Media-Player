@@ -192,3 +192,5 @@ git_stats/*
 StyleCop.Cache
 bin
 obj
+BIN/
+ReadPropertiesOfMediaFiles/
