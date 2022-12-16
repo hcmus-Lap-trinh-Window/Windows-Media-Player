@@ -27,7 +27,8 @@ namespace Media_Player_App
         private bool isMediaPlaying = false;
         private bool isMediaSuffle = false;
         private bool isMediaNewFile = false;
-        private bool userIsDraggingSlider = false;
+        private bool userIsDraggingTimeSlider = false;
+        private bool userIsDraggingVolumeSlider = false;
 
         private DispatcherTimer timer;
         private List<int> _PlaylistHistory = new List<int>();
@@ -49,7 +50,7 @@ namespace Media_Player_App
 
         private void timer_Tick(object sender, EventArgs e)
         {
-            if ((media.Source != null) && (media.NaturalDuration.HasTimeSpan) && (!userIsDraggingSlider))
+            if ((media.Source != null) && (media.NaturalDuration.HasTimeSpan) && (!userIsDraggingTimeSlider))
             {
                 slider.Minimum = 0;
                 slider.Maximum = media.NaturalDuration.TimeSpan.TotalSeconds;
@@ -321,17 +322,23 @@ namespace Media_Player_App
 
         private void Previous_Button_CLick(object sender, RoutedEventArgs e)
         {
+            playPreviousMediaFile();
+        }
+
+        private void playPreviousMediaFile()
+        {
             var currentMediaIndex = Playlists.SelectedIndex;
             int mediaIndex;
 
             if (isMediaSuffle)
             {
-                if(_PlaylistHistory.Count > 0)
+                if (_PlaylistHistory.Count > 0)
                 {
                     var indexToBack = _PlaylistHistory.Count - 1;
                     mediaIndex = _PlaylistHistory[indexToBack];
                     _PlaylistHistory.RemoveAt(indexToBack);
-                } else
+                }
+                else
                 {
                     Previous_Button.IsEnabled = false;
                     return;
@@ -345,12 +352,17 @@ namespace Media_Player_App
                 {
                     Previous_Button.IsEnabled = false;
                     return;
-                }                    
+                }
             }
             Playlists.SelectedIndex = mediaIndex;
         }
 
         private void Play_Button_CLick(object sender, RoutedEventArgs e)
+        {
+            playOrPauseCurrentMediaFile();
+        }
+
+        private void playOrPauseCurrentMediaFile()
         {
             if (isMediaPlaying)
             {
@@ -367,9 +379,14 @@ namespace Media_Player_App
 
         private void Next_Button_CLick(object sender, RoutedEventArgs e)
         {
+            playNextMediaFile();
+        }
+
+        private void playNextMediaFile()
+        {
             var currentMediaIndex = Playlists.SelectedIndex;
             int mediaIndex;
-            Previous_Button.IsEnabled = true;           
+            Previous_Button.IsEnabled = true;
 
             if (isMediaSuffle)
             {
@@ -387,7 +404,7 @@ namespace Media_Player_App
             {
                 mediaIndex = ++currentMediaIndex;
 
-                if(mediaIndex >= _PlayLists.Count)
+                if (mediaIndex >= _PlayLists.Count)
                     mediaIndex = 0;
             }
             Playlists.SelectedIndex = mediaIndex;
@@ -422,9 +439,14 @@ namespace Media_Player_App
         }
 
         private void media_MediaOpened(object sender, RoutedEventArgs e)
-        {           
+        {
             #region set change in UI
-            
+            Control_Button_Group.Visibility = Visibility.Visible;
+            Progress_Time.Visibility = Visibility.Visible;
+            Shuffle_Volume_Group.Visibility = Visibility.Visible;
+
+            Volume_Progress.Value = media.Volume;
+            setVolumeKind(media.Volume);
             totalPosition.Text = TimeSpan.FromSeconds(media.NaturalDuration.TimeSpan.TotalSeconds).ToString(@"hh\:mm\:ss");
 
             isMediaPlaying = true;
@@ -436,6 +458,18 @@ namespace Media_Player_App
             audioImagePath_border.BorderBrush = Brushes.White;
             #endregion
 
+        }
+
+        private void setVolumeKind(double volume)
+        {
+            if(volume == 0 || media.IsMuted)
+                Volume.Kind = MahApps.Metro.IconPacks.PackIconMaterialKind.VolumeOff;
+            else if(volume > 0 && volume < 0.3)
+                Volume.Kind = MahApps.Metro.IconPacks.PackIconMaterialKind.VolumeLow;
+            else if (volume >= 0.3 && volume <= 0.7)
+                Volume.Kind = MahApps.Metro.IconPacks.PackIconMaterialKind.VolumeMedium;
+            else
+                Volume.Kind = MahApps.Metro.IconPacks.PackIconMaterialKind.VolumeHigh;
         }
 
         private void media_MediaEnded(object sender, RoutedEventArgs e)
@@ -476,12 +510,12 @@ namespace Media_Player_App
 
         private void slideProgress_DragStarted(object sender, System.Windows.Controls.Primitives.DragStartedEventArgs e)
         {
-            userIsDraggingSlider = true;
+            userIsDraggingTimeSlider = true;
         }
 
         private void slideProgress_DragCompleted(object sender, System.Windows.Controls.Primitives.DragCompletedEventArgs e)
         {
-            userIsDraggingSlider = false;
+            userIsDraggingTimeSlider = false;
             media.Position = TimeSpan.FromSeconds(slider.Value);
         }
 
@@ -490,6 +524,68 @@ namespace Media_Player_App
             currentPosition.Text = TimeSpan.FromSeconds(slider.Value).ToString(@"hh\:mm\:ss");
         }
 
-        
+        private void Volume_Button_CLick(object sender, RoutedEventArgs e)
+        {
+            media.IsMuted = !media.IsMuted;
+            setVolumeKind(media.Volume);            
+        }
+
+        private void VolumeProgress_DragStarted(object sender, System.Windows.Controls.Primitives.DragStartedEventArgs e)
+        {
+            userIsDraggingVolumeSlider = true;
+        }
+
+        private void VolumeProgress_DragCompleted(object sender, System.Windows.Controls.Primitives.DragCompletedEventArgs e)
+        {
+            userIsDraggingVolumeSlider = false;
+            media.Volume = Volume_Progress.Value;
+            setVolumeKind(media.Volume);
+        }
+
+        private void KeyDownHandler(object sender, KeyEventArgs e)
+        {
+            if (e.Key == Key.N && Keyboard.Modifiers == ModifierKeys.Control)                       // Next media
+            {
+                playNextMediaFile();
+            }
+            else if (e.Key == Key.P && Keyboard.Modifiers == ModifierKeys.Control)                  // Previous media
+            {
+                playPreviousMediaFile();
+            }
+            else if (e.Key == Key.K && Keyboard.Modifiers == ModifierKeys.Control)                  // Play/Pause media
+            {
+                playOrPauseCurrentMediaFile();
+            }
+            else if (e.Key == Key.M && Keyboard.Modifiers == ModifierKeys.Control)                  // Mute/Unmute media
+            {
+                media.IsMuted = !media.IsMuted;
+            }
+            else if (e.Key == Key.J && Keyboard.Modifiers == ModifierKeys.Control)                  // Move back 10 seconds
+            {
+                media.Position -= media.Position >= TimeSpan.FromSeconds(10) ? TimeSpan.FromSeconds(10) : media.Position;
+                slider.Value = media.Position.TotalSeconds;
+                currentPosition.Text = TimeSpan.FromSeconds(slider.Value).ToString(@"hh\:mm\:ss");
+            }
+            else if (e.Key == Key.L && Keyboard.Modifiers == ModifierKeys.Control)                  // Move forward 10 seconds
+            {
+                var remainTime = TimeSpan.FromSeconds(media.NaturalDuration.TimeSpan.TotalSeconds) - media.Position;
+
+                media.Position += remainTime >= TimeSpan.FromSeconds(10) ? TimeSpan.FromSeconds(10) : remainTime;
+                slider.Value = media.Position.TotalSeconds;
+                currentPosition.Text = TimeSpan.FromSeconds(slider.Value).ToString(@"hh\:mm\:ss");
+            }
+            else if (e.Key == Key.Home)                                                             // Move to beginning
+            {
+                media.Position = TimeSpan.FromSeconds(0);
+                slider.Value = 0;
+                currentPosition.Text = TimeSpan.FromSeconds(slider.Value).ToString(@"hh\:mm\:ss");
+            }
+            else if (e.Key == Key.End)                                                              // Move to end
+            {
+                media.Position = TimeSpan.FromSeconds(media.NaturalDuration.TimeSpan.TotalSeconds);
+                slider.Value = media.Position.TotalSeconds;
+                currentPosition.Text = TimeSpan.FromSeconds(slider.Value).ToString(@"hh\:mm\:ss");
+            }
+        }       
     }
 }

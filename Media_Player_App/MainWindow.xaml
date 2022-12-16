@@ -9,6 +9,7 @@
         mc:Ignorable="d"
         Loaded="Window_Loaded"
         ResizeMode="CanResizeWithGrip"
+        KeyDown="KeyDownHandler"
         Icon="./Images/icon.png"
         Title="Media Player" MinHeight="650" MinWidth="1360">
     <DockPanel LastChildFill="True" Margin="10px">
@@ -225,7 +226,7 @@
                         <MediaElement Name="media" MediaOpened="media_MediaOpened" MediaEnded="media_MediaEnded" LoadedBehavior="Manual" VerticalAlignment="Center" HorizontalAlignment="Stretch">
                         </MediaElement>
                     </Border>
-                    <Image x:Name="mediaShow_image" Width="650" DockPanel.Dock="Top" Source="./Images/relax-music.png" RenderOptions.BitmapScalingMode="HighQuality"></Image>
+                    <Image x:Name="mediaShow_image" Width="650" DockPanel.Dock="Top" HorizontalAlignment="Center" Source="./Images/relax-music.png" RenderOptions.BitmapScalingMode="HighQuality"></Image>
                 </DockPanel>
                 <Border Grid.Row="2" BorderBrush="white" BorderThickness="1,0,1,1">
                     <Grid  VerticalAlignment="Center" Background="#FFBDDDFF" Height="80" Margin="0 0 0 5">
@@ -248,7 +249,7 @@
                     </StackPanel>
 
                     <StackPanel Grid.Column="1" HorizontalAlignment="Center" VerticalAlignment="Center">
-                        <StackPanel Orientation="Horizontal" VerticalAlignment="Center" HorizontalAlignment="Center">
+                        <StackPanel x:Name="Control_Button_Group" Visibility="Hidden" Orientation="Horizontal" VerticalAlignment="Center" HorizontalAlignment="Center">
                             <Button Name="Previous_Button" Click="Previous_Button_CLick" Style="{StaticResource playerButton}">
                                 <Icon:PackIconMaterial Kind="SkipPrevious" Style="{StaticResource playerButtonIcon}"/>
                             </Button>
@@ -259,23 +260,31 @@
                                 <Icon:PackIconMaterial Kind="SkipNext" Style="{StaticResource playerButtonIcon}"/>
                             </Button>
                         </StackPanel>
-                        <StackPanel Orientation="Horizontal" Margin=" 0 0 0 5">
+                        <StackPanel x:Name="Progress_Time" Visibility="Hidden" Orientation="Horizontal" Margin=" 0 0 0 5">
                             <TextBlock Width="45" x:Name="currentPosition" d:Text="00:01" TextAlignment="Right"></TextBlock>
                             <Slider x:Name="slider" VerticalAlignment="Center" Width="370" IsSelectionRangeEnabled="True" Thumb.DragStarted="slideProgress_DragStarted" Thumb.DragCompleted="slideProgress_DragCompleted" ValueChanged="slideProgress_ValueChanged" />
                             <TextBlock Width="45" x:Name="totalPosition" d:Text="03:05:31" TextAlignment="Left"></TextBlock>
                         </StackPanel>
                     </StackPanel>
 
-                        <StackPanel Orientation="Horizontal" Grid.Column="2" HorizontalAlignment="Right" VerticalAlignment="Center" Margin="0 0 10 0">
-                            <Button Name="Shuffle_Button" Click="Shuffle_Button_CLick" Style="{StaticResource playerButton}" >
-                                <Icon:PackIconMaterial x:Name="IsSuffle" Kind="ShuffleDisabled" Style="{StaticResource playerButtonIcon}" Height="20" Width="20"/>
-                            </Button>
-                            <TextBlock Width="90" FontSize="16" VerticalAlignment="Center" HorizontalAlignment="Center" TextAlignment="Left">
-                                <Run x:Name="shuffeMode" Foreground="White" />
-                                <Run Foreground="Red" Text="On"/>
-                            </TextBlock>
+                        <StackPanel x:Name="Shuffle_Volume_Group" Visibility="Hidden"  Grid.Column="2" Orientation="Vertical" HorizontalAlignment="Right" VerticalAlignment="Center" Margin="0 0 10 0">
+                            <StackPanel x:Name="Shuffle_Group" Orientation="Horizontal" VerticalAlignment="Center" >
+                                <Button Name="Shuffle_Button" Click="Shuffle_Button_CLick" Width="30" Height="30" Style="{StaticResource playerButton}" >
+                                    <Icon:PackIconMaterial x:Name="IsSuffle" Kind="ShuffleDisabled" Style="{StaticResource playerButtonIcon}" Height="18" Width="18"/>
+                                </Button>
+                                <TextBlock Width="90" FontSize="16" VerticalAlignment="Center" HorizontalAlignment="Center" TextAlignment="Left">
+                                    <Run x:Name="shuffeMode" Foreground="White" />
+                                    <Run Foreground="Red" Text="On"/>       
+                                </TextBlock>
+                            </StackPanel>
+                            <StackPanel x:Name="Volume_Group" Orientation="Horizontal" VerticalAlignment="Center">
+                                <Button Name="Volume_Button" Click="Volume_Button_CLick" Width="30" Height="30" Style="{StaticResource playerButton}" >
+                                    <Icon:PackIconMaterial x:Name="Volume" Kind="VolumeMedium" Style="{StaticResource playerButtonIcon}" Height="18" Width="18"/>
+                                </Button>
+                                <Slider x:Name="Volume_Progress" Width="90" VerticalAlignment="Center" IsSelectionRangeEnabled="True" Maximum="1" Thumb.DragStarted="VolumeProgress_DragStarted" Thumb.DragCompleted="VolumeProgress_DragCompleted" />
+                            </StackPanel>
                         </StackPanel>
-                </Grid>
+                    </Grid>
                 </Border>
             </Grid>
         </DockPanel>
