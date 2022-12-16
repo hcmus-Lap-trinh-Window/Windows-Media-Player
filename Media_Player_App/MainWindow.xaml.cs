@@ -95,10 +95,10 @@ namespace Media_Player_App
                 }
                 var playListDirectory = Directory.GetCurrentDirectory() + $"\\{PlayListFolder}\\{playListSelected}.json";
                 var playListContent = File.ReadAllText(playListDirectory);
-                if (playListContent != null) 
+                if (playListContent != null)
                 {
                     var jsonToPlayList = JsonSerializer.Deserialize<ObservableCollection<Media>>(playListContent);
-                    if (jsonToPlayList != null) 
+                    if (jsonToPlayList != null)
                     {
                         _PlayLists = new ObservableCollection<Media>();
                         foreach (var media in jsonToPlayList)
@@ -110,9 +110,9 @@ namespace Media_Player_App
                 Playlists.ItemsSource = _PlayLists;
                 AddPlaylist.Text = playListSelected.ToString();
             }
-            catch(Exception ex)
+            catch (Exception ex)
             {
-                throw new Exception(ex.Message, ex.InnerException ?? ex);
+                MessageBox.Show(MessageType.Error, "Errors", String.Format("{0}. {1}", ex.Message, ex.InnerException?.Message));
             }
         }
 
@@ -152,7 +152,7 @@ namespace Media_Player_App
             }
             catch (Exception ex)
             {
-                throw new Exception(ex.Message, ex.InnerException ?? ex);
+                MessageBox.Show(MessageType.Error, "Errors", String.Format("{0}. {1}", ex.Message, ex.InnerException?.Message));
             }
         }
         private void SaveJson(string filePath, string data, bool isOverride = false)
@@ -196,7 +196,7 @@ namespace Media_Player_App
             }
             catch (Exception ex)
             {
-                throw new Exception(ex.Message, ex.InnerException ?? ex);
+                MessageBox.Show(MessageType.Error, "Errors", String.Format("{0}. {1}", ex.Message, ex.InnerException?.Message));
             }
         }
         private List<string> GetAllJsonFile(string FolderName)
@@ -220,7 +220,7 @@ namespace Media_Player_App
             }
             catch (Exception ex)
             {
-                throw new Exception(ex.Message, ex.InnerException ?? ex);
+                MessageBox.Show(MessageType.Error, "Errors", String.Format("{0}. {1}", ex.Message, ex.InnerException?.Message));
             }
             return result;
         }
@@ -358,5 +358,6 @@ namespace Media_Player_App
             }
             Playlists.SelectedIndex = mediaIndex;
         }
+
     }
 }
