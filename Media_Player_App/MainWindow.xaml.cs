@@ -5,12 +5,17 @@ using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Diagnostics.Contracts;
+using System.DirectoryServices;
 using System.IO;
 using System.Linq;
+using System.Numerics;
 using System.Text.Json;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
+using System.Windows.Media;
+using System.Windows.Media.Imaging;
+using System.Windows.Threading;
 
 namespace Media_Player_App
 {
@@ -22,6 +27,11 @@ namespace Media_Player_App
         private bool isMediaPlaying = false;
         private bool isMediaSuffle = false;
         private bool isMediaNewFile = false;
+        private bool userIsDraggingSlider = false;
+
+        private DispatcherTimer timer;
+        private List<int> _PlaylistHistory = new List<int>();
+
         private Media CurrentMedia = null;
         private ObservableCollection<Media> _PlayLists;
         private ObservableCollection<String> _PlayListComboBox;
@@ -31,6 +41,22 @@ namespace Media_Player_App
         {
             InitializeComponent();
 
+            timer = new DispatcherTimer();
+            timer.Interval = TimeSpan.FromSeconds(1);
+            timer.Tick += timer_Tick;
+            timer.Start();
+        }
+
+        private void timer_Tick(object sender, EventArgs e)
+        {
+            if ((media.Source != null) && (media.NaturalDuration.HasTimeSpan) && (!userIsDraggingSlider))
+            {
+                slider.Minimum = 0;
+                slider.Maximum = media.NaturalDuration.TimeSpan.TotalSeconds;
+                slider.Value = media.Position.TotalSeconds;
+
+                currentPosition.Text = TimeSpan.FromSeconds(slider.Value).ToString(@"hh\:mm\:ss");
+            }
         }
 
         private void Window_Loaded(object sender, RoutedEventArgs e)
@@ -38,6 +64,16 @@ namespace Media_Player_App
             // init flag for tracking media player's state
             isMediaPlaying = false;
             isMediaSuffle = true;
+
+            if(isMediaSuffle)
+            {
+                IsSuffle.Kind = MahApps.Metro.IconPacks.PackIconMaterialKind.Shuffle;
+                shuffeMode.Text = "Shuffle: ";
+            } else
+            {
+                IsSuffle.Kind = MahApps.Metro.IconPacks.PackIconMaterialKind.ShuffleDisabled;
+                shuffeMode.Text = "Normal: ";
+            }
 
             // init playlist
             _PlayLists = new ObservableCollection<Media>();
@@ -52,6 +88,7 @@ namespace Media_Player_App
         private void New_File_Button_Click(object sender, RoutedEventArgs e)
         {
             var screen = new OpenFileDialog();
+            screen.Filter = "Media Files (*.mp3; *.mp4)|*.mp3;*.mp4|All files (*.*)|*.*";
             if (screen.ShowDialog() == true)
             {
                 var _currentPlaying = screen.FileName;
@@ -62,26 +99,37 @@ namespace Media_Player_App
                     Singer = "Truong Cong Thanh",
                     ImagePath = Directory.GetCurrentDirectory() + @"/Images/thanh.png",
                     FullPath = new Uri(_currentPlaying),
-                };
+                };               
+
                 var isDuplicate = _PlayLists.Where(c => c.FullPath == newMedia.FullPath && c.Name == newMedia.Name).ToArray();
                 if (isDuplicate == null || isDuplicate.Length <= 0)
                 {
                     // we have the flow: -> load file -> if not duplicate -> add to playlist -> play the newest song, update button in UI -> set CurrentMedia = new song
                     // -> set selected item in playlist = new song
-                    _PlayLists.Add(newMedia);
-                    media.Source = new Uri(_currentPlaying, UriKind.Absolute);
-                    #region set change in UI
-                    // if add new song, play it, no check state
-                    media.Play();
-                    isMediaPlaying = true;
-                    UpdatePlayButton();
-                    #endregion
-                    CurrentMedia = newMedia;
-                    #region set selected item in playlist
-                    Playlists.SelectedItem = newMedia;
-                    #endregion
+                    handleChangeWhenAddNewFile(_currentPlaying, newMedia);
                 }
             }
+        }
+
+        private void handleChangeWhenAddNewFile(string filePath, Media newMedia)
+        {
+            // add new media to playlist and playlist history
+            _PlayLists.Add(newMedia);
+            if (isMediaSuffle && _PlayLists.Count > 1)
+                _PlaylistHistory.Add(_PlayLists.IndexOf(newMedia) - 1);
+
+            #region set change in UI
+
+            media.Source = new Uri(filePath, UriKind.Absolute);
+            media.Play();
+
+            Next_Button.IsEnabled = _PlayLists.Count > 1 ? true : false;
+            Previous_Button.IsEnabled = _PlayLists.Count > 1 ? true : false;
+
+            CurrentMedia = newMedia;
+            Playlists.SelectedItem = CurrentMedia;
+
+            #endregion                    
         }
 
         private void PlaylistComboBox_SelectionChanged(object sender, SelectionChangedEventArgs e)
@@ -273,7 +321,33 @@ namespace Media_Player_App
 
         private void Previous_Button_CLick(object sender, RoutedEventArgs e)
         {
+            var currentMediaIndex = Playlists.SelectedIndex;
+            int mediaIndex;
 
+            if (isMediaSuffle)
+            {
+                if(_PlaylistHistory.Count > 0)
+                {
+                    var indexToBack = _PlaylistHistory.Count - 1;
+                    mediaIndex = _PlaylistHistory[indexToBack];
+                    _PlaylistHistory.RemoveAt(indexToBack);
+                } else
+                {
+                    Previous_Button.IsEnabled = false;
+                    return;
+                }
+            }
+            else
+            {
+                mediaIndex = --currentMediaIndex;
+
+                if (mediaIndex < 0)
+                {
+                    Previous_Button.IsEnabled = false;
+                    return;
+                }                    
+            }
+            Playlists.SelectedIndex = mediaIndex;
         }
 
         private void Play_Button_CLick(object sender, RoutedEventArgs e)
@@ -294,7 +368,8 @@ namespace Media_Player_App
         private void Next_Button_CLick(object sender, RoutedEventArgs e)
         {
             var currentMediaIndex = Playlists.SelectedIndex;
-            int mediaIndex = -1;
+            int mediaIndex;
+            Previous_Button.IsEnabled = true;           
 
             if (isMediaSuffle)
             {
@@ -304,10 +379,16 @@ namespace Media_Player_App
                 {
                     mediaIndex = randInt.Next(0, _PlayLists.Count);
                 }
+
+                // add to history for previous button click
+                _PlaylistHistory.Add(currentMediaIndex);
             }
             else
             {
-                mediaIndex = currentMediaIndex++;
+                mediaIndex = ++currentMediaIndex;
+
+                if(mediaIndex >= _PlayLists.Count)
+                    mediaIndex = 0;
             }
             Playlists.SelectedIndex = mediaIndex;
         }
@@ -318,11 +399,13 @@ namespace Media_Player_App
             {
                 isMediaSuffle = false;
                 IsSuffle.Kind = MahApps.Metro.IconPacks.PackIconMaterialKind.ShuffleDisabled;
+                shuffeMode.Text = "Normal:";
             }
             else
             {
                 IsSuffle.Kind = MahApps.Metro.IconPacks.PackIconMaterialKind.Shuffle;
                 isMediaSuffle = true;
+                shuffeMode.Text = "Shuffle:";
             }
             UpdatePlayButton();
         }
@@ -338,26 +421,75 @@ namespace Media_Player_App
             }
         }
 
+        private void media_MediaOpened(object sender, RoutedEventArgs e)
+        {           
+            #region set change in UI
+            
+            totalPosition.Text = TimeSpan.FromSeconds(media.NaturalDuration.TimeSpan.TotalSeconds).ToString(@"hh\:mm\:ss");
+
+            isMediaPlaying = true;
+            UpdatePlayButton();
+
+            name.Text = CurrentMedia.Name;
+            singer.Text = CurrentMedia.Singer;            
+            audioImagePath.ImageSource = Utilities.covertStringtoBitmapImage(CurrentMedia.ImagePath);
+            audioImagePath_border.BorderBrush = Brushes.White;
+            #endregion
+
+        }
+
         private void media_MediaEnded(object sender, RoutedEventArgs e)
         {
             var currentMediaIndex = Playlists.SelectedIndex;
-            int mediaIndex = -1;
+            int mediaIndex;
+
+            if(_PlayLists.Count == 1)
+            {
+                media.Pause();
+                isMediaPlaying = false;
+                UpdatePlayButton();
+                
+                return;
+            }
 
             if (isMediaSuffle)
             {
                 Random randInt = new Random();
-                mediaIndex = randInt.Next(0, _PlayLists.Count - 1);
+                mediaIndex = randInt.Next(0, _PlayLists.Count);
                 while (currentMediaIndex == mediaIndex)
                 {
-                    mediaIndex = randInt.Next(0, _PlayLists.Count - 1);
+                    mediaIndex = randInt.Next(0, _PlayLists.Count);
                 }
+
+                // add to history for previous button click
+                _PlaylistHistory.Add(currentMediaIndex);
             }
             else
             {
-                mediaIndex = currentMediaIndex++;
+                mediaIndex = ++currentMediaIndex;
+
+                if (mediaIndex >= _PlayLists.Count)
+                    mediaIndex = 0;
             }
             Playlists.SelectedIndex = mediaIndex;
         }
 
+        private void slideProgress_DragStarted(object sender, System.Windows.Controls.Primitives.DragStartedEventArgs e)
+        {
+            userIsDraggingSlider = true;
+        }
+
+        private void slideProgress_DragCompleted(object sender, System.Windows.Controls.Primitives.DragCompletedEventArgs e)
+        {
+            userIsDraggingSlider = false;
+            media.Position = TimeSpan.FromSeconds(slider.Value);
+        }
+
+        private void slideProgress_ValueChanged(object sender, RoutedPropertyChangedEventArgs<double> e)
+        {
+            currentPosition.Text = TimeSpan.FromSeconds(slider.Value).ToString(@"hh\:mm\:ss");
+        }
+
+        
     }
 }

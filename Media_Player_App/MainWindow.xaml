@@ -21,7 +21,7 @@
                 <StackPanel Orientation="Horizontal" HorizontalAlignment="Stretch" VerticalAlignment="Center" Margin="5,0,0,0"
                            DockPanel.Dock="Top">
                     <TextBlock VerticalAlignment="Center"  Text="Select Playlist: " Width="80"/>
-                    <hc:ComboBox Name="PlaylistComboBox" Width="293" hc:InfoElement.Placeholder="Select Playlist" SelectionChanged="PlaylistComboBox_SelectionChanged" HorizontalAlignment="Stretch" Margin="5px" VerticalContentAlignment="Center"/>
+                    <hc:ComboBox Name="PlaylistComboBox" Width="303" hc:InfoElement.Placeholder="Select Playlist" SelectionChanged="PlaylistComboBox_SelectionChanged" HorizontalAlignment="Stretch" Margin="5px" VerticalContentAlignment="Center"/>
                 </StackPanel>
                 <DockPanel HorizontalAlignment="Stretch" VerticalAlignment="Center" Margin="0,0,0,5"
                             DockPanel.Dock="Top">
@@ -42,7 +42,7 @@
                             DockPanel.Dock="Bottom">
                     <TextBlock VerticalAlignment="Center" Text="New Playlist: " Width="80"/>
                     <TextBox x:Name="AddPlaylist" Width="203" Margin="5px" />
-                    <Button Cursor="Hand" Name="Add_Playlist_Button" Click="Add_Playlist_Button_CLick" Margin="5px" Width="80">
+                    <Button Cursor="Hand" Name="Add_Playlist_Button" Click="Add_Playlist_Button_CLick" Margin="5px" Width="90">
                         <StackPanel Orientation ="Horizontal" VerticalAlignment="Center" HorizontalAlignment="Left">
                             <Image Source="Images/save.png" Margin="0,0,5,0" RenderOptions.BitmapScalingMode="HighQuality"/>
                             <TextBlock Text="Save"/>
@@ -55,23 +55,27 @@
                 Margin="5,0,5,0"
                 Name="Playlists"
                 ScrollViewer.HorizontalScrollBarVisibility="Disabled"
-                ScrollViewer.VerticalScrollBarVisibility="Auto" d:ItemsSource="{d:SampleData ItemCount=5}">
+                ScrollViewer.VerticalScrollBarVisibility="Auto" d:ItemsSource="{d:SampleData ItemCount=2}" HorizontalAlignment="Center" Width="388">
                     <ListView.Resources>
                         <!--Layout for Default Item-->
-                        <DataTemplate x:Key="DefaultItemTemplate">
-                            <StackPanel x:Name="RuleRow" Width="310" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Background="White">
-                                <Grid Height="30" Width="310">
+                        <DataTemplate x:Key="DefaultItemTemplate" >
+                            <StackPanel x:Name="RuleRow" Height="50" Width="370" HorizontalAlignment="Stretch" VerticalAlignment="Center" Background="#FFBDDDFF" >
+                                <Grid Height="50" Width="370" HorizontalAlignment="Stretch">
                                     <Grid.ColumnDefinitions>
                                         <ColumnDefinition  Width="*"/>
-                                        <ColumnDefinition  Width="2*"/>
+                                        <ColumnDefinition  Width="*"/>
                                         <ColumnDefinition  Width="5*"/>
                                         <ColumnDefinition  Width="*"/>
                                     </Grid.ColumnDefinitions>
-                                    <Image Grid.Column="0" Width="20" Height="20" VerticalAlignment="Center" Source="/Images/play.png" HorizontalAlignment="Center" RenderOptions.BitmapScalingMode="HighQuality"/> <!---->
-                                    <Image Grid.Column="1" Width="20" Height="20" VerticalAlignment="Center" Source="{Binding ImagePath}" HorizontalAlignment="Center" RenderOptions.BitmapScalingMode="HighQuality"/>
+                                    <Image Grid.Column="0" Width="25" Height="25" VerticalAlignment="Center" Source="/Images/play.png" HorizontalAlignment="Center" RenderOptions.BitmapScalingMode="HighQuality"/>
+                                    <Border Grid.Column="1" CornerRadius="10,10,10,10" Width="35" Height="35" Margin="5px" VerticalAlignment="Center" HorizontalAlignment="Center" BorderBrush="#FFBDDDFF" BorderThickness="1,1,1,1">
+                                        <Border.Background>
+                                            <ImageBrush ImageSource="{Binding ImagePath}" RenderOptions.BitmapScalingMode="HighQuality"/>
+                                        </Border.Background>
+                                    </Border>
                                     <StackPanel Grid.Column="2"  Orientation="Vertical" VerticalAlignment="Center" HorizontalAlignment="Left" Margin="5 0 0 0">
-                                        <TextBlock  TextWrapping="Wrap" VerticalAlignment="Center" Height="20" HorizontalAlignment="Left" Margin="0 0 0 5"><Run Text="{Binding Name}" FontSize="16"/></TextBlock>
-                                        <TextBlock  TextWrapping="Wrap" VerticalAlignment="Center" Height="20" HorizontalAlignment="Left" ><Run Text="{Binding Singer}" FontSize="16"/></TextBlock>
+                                        <TextBlock  TextWrapping="NoWrap" VerticalAlignment="Center" Height="20" HorizontalAlignment="Left" ><Run  Text="{Binding Name}" FontSize="14"/></TextBlock>
+                                        <TextBlock  TextWrapping="NoWrap" VerticalAlignment="Center" Height="20" HorizontalAlignment="Left" ><Run Text="{Binding Singer}" FontSize="14"/></TextBlock>
                                     </StackPanel>
                                     <Button x:Name="Remove_File_Button" CommandParameter="{Binding}" Click="Remove_File_Button_Click" Grid.Column="3" Width="20" Cursor="Hand" Padding="3,3,3,3" VerticalAlignment="Center" BorderThickness="0" Background="Transparent" HorizontalAlignment="Center">
                                         <Button.Style>
@@ -101,19 +105,23 @@
 
                         <!--Layout for Selected Item-->
                         <DataTemplate x:Key="SelectedItemTemplate">
-                            <StackPanel x:Name="RuleRow" Width="310" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Background="#EEEEEE">
-                                <Grid Height="30" Width="310">
+                            <StackPanel x:Name="RuleRow" Height="50" Width="370" HorizontalAlignment="Stretch" VerticalAlignment="Center" Background="White">
+                                <Grid Height="50" Width="370">
                                     <Grid.ColumnDefinitions>
                                         <ColumnDefinition  Width="*"/>
-                                        <ColumnDefinition  Width="2*"/>
+                                        <ColumnDefinition  Width="*"/>
                                         <ColumnDefinition  Width="5*"/>
                                         <ColumnDefinition  Width="*"/>
                                     </Grid.ColumnDefinitions>
-                                    <Image Grid.Column="0" Width="20" Height="20" VerticalAlignment="Center" Source="/Images/pause.png" HorizontalAlignment="Center" RenderOptions.BitmapScalingMode="HighQuality"/>
-                                    <Image Grid.Column="1" Width="20" Height="20" VerticalAlignment="Center" Source="{Binding ImagePath}" HorizontalAlignment="Center" RenderOptions.BitmapScalingMode="HighQuality"/>
+                                    <Image Grid.Column="0" Width="25" Height="25" VerticalAlignment="Center" Source="/Images/pause.png" HorizontalAlignment="Center" RenderOptions.BitmapScalingMode="HighQuality"/>
+                                    <Border Grid.Column="1" CornerRadius="10,10,10,10" Width="35" Height="35" Margin="5px" VerticalAlignment="Center" HorizontalAlignment="Center" BorderBrush="#FFBDDDFF" BorderThickness="1,1,1,1">
+                                        <Border.Background>
+                                            <ImageBrush ImageSource="{Binding ImagePath}" RenderOptions.BitmapScalingMode="HighQuality"/>
+                                        </Border.Background>
+                                    </Border>
                                     <StackPanel Grid.Column="2"  Orientation="Vertical" VerticalAlignment="Center" HorizontalAlignment="Left" Margin="5 0 0 0">
-                                        <TextBlock  TextWrapping="Wrap" VerticalAlignment="Center" Height="20" HorizontalAlignment="Left" Margin="0 0 0 5" ><Run Text="{Binding Name}" FontSize="16"/></TextBlock>
-                                        <TextBlock  TextWrapping="Wrap" VerticalAlignment="Center" Height="20" HorizontalAlignment="Left" ><Run Text="{Binding Singer}" FontSize="16"/></TextBlock>
+                                        <TextBlock  TextWrapping="NoWrap" VerticalAlignment="Center" Height="20" HorizontalAlignment="Left" ><Run Text="{Binding Name}" FontSize="14"/></TextBlock>
+                                        <TextBlock  TextWrapping="NoWrap" VerticalAlignment="Center" Height="20" HorizontalAlignment="Left" ><Run Text="{Binding Singer}" FontSize="14"/></TextBlock>
                                     </StackPanel>
                                     <Button x:Name="Remove_File_Button" CommandParameter="{Binding}" Click="Remove_File_Button_Click" Grid.Column="3" Width="20" Cursor="Hand" Padding="3,3,3,3" VerticalAlignment="Center" BorderThickness="0" Background="Transparent" HorizontalAlignment="Center">
                                         <Button.Style>
@@ -146,12 +154,11 @@
                     </ListView.Background>
                     <ListView.ItemContainerStyle>
                         <Style TargetType="ListBoxItem">
-                            <Setter Property="HorizontalContentAlignment" Value="Stretch"/>
-                            <Setter Property="Padding" Value="5"/>
-                            <Setter Property="Margin" Value="0,0,0,0"/>
-                            <Setter Property="MinHeight" Value="40"/>
-                            <Setter Property="MaxHeight" Value="40"/>
-                            <Setter Property="VerticalContentAlignment" Value="Top"/>
+                            <Setter Property="HorizontalContentAlignment" Value="Center"/>
+                            <Setter Property="Margin" Value="0,0,0,5"/>
+                            <Setter Property="Height" Value="50" />
+                            <Setter Property="Padding" Value="0.7" />
+                            <Setter Property="VerticalContentAlignment" Value="Center"/>
                             <Setter Property="ContentTemplate" Value="{StaticResource DefaultItemTemplate}" />
                             <Setter Property="Background" Value="White"/>
                             <Setter Property="AllowDrop" Value="true"/>
@@ -213,10 +220,12 @@
                         </StackPanel>
                     </StackPanel>
                 </DockPanel>
-                <DockPanel DockPanel.Dock="Top" Grid.Row="1" HorizontalAlignment="Stretch" >
-                    <Border BorderBrush="white" BorderThickness="1" Background="#FFBDDDFF">
-                        <MediaElement Name="media" MediaEnded="media_MediaEnded" LoadedBehavior="Manual" VerticalAlignment="Center" HorizontalAlignment="Stretch"></MediaElement>
+                <DockPanel Grid.Row="1" HorizontalAlignment="Stretch" >
+                    <Border DockPanel.Dock="Bottom" BorderBrush="white" BorderThickness="1" Background="#FFBDDDFF">
+                        <MediaElement Name="media" MediaOpened="media_MediaOpened" MediaEnded="media_MediaEnded" LoadedBehavior="Manual" VerticalAlignment="Center" HorizontalAlignment="Stretch">
+                        </MediaElement>
                     </Border>
+                    <Image x:Name="mediaShow_image" Width="650" DockPanel.Dock="Top" Source="./Images/relax-music.png" RenderOptions.BitmapScalingMode="HighQuality"></Image>
                 </DockPanel>
                 <Border Grid.Row="2" BorderBrush="white" BorderThickness="1,0,1,1">
                     <Grid  VerticalAlignment="Center" Background="#FFBDDDFF" Height="80" Margin="0 0 0 5">
@@ -226,15 +235,15 @@
                         <ColumnDefinition  Width="*"/>
                     </Grid.ColumnDefinitions>
                     <StackPanel Orientation="Horizontal" Grid.Column="0">
-                        <Ellipse Grid.Column="0" Width="40" Height="40" Margin="5px">
-                            <Ellipse.Fill>
-                                <ImageBrush ImageSource="{Binding ImagePath}" RenderOptions.BitmapScalingMode="HighQuality"/>
-                            </Ellipse.Fill>
-                        </Ellipse>
-                        
-                        <StackPanel Grid.Column="1"  Orientation="Vertical" VerticalAlignment="Center" HorizontalAlignment="Left" Margin="5 0 0 0">
-                                <TextBlock TextWrapping="WrapWithOverflow" VerticalAlignment="Center" HorizontalAlignment="Left" Margin="0 0 0 5" ><Run Foreground="White" d:Text="Yeu em hon da tung" Text="{Binding Name}" FontSize="16"/></TextBlock>
-                            <TextBlock TextWrapping="WrapWithOverflow" VerticalAlignment="Center" HorizontalAlignment="Left" ><Run Foreground="#FFE4F9FF" FontWeight="SemiBold" d:Text="fsdfsd" Text="{Binding Singer}" FontSize="14"/></TextBlock>
+                            <Border x:Name="audioImagePath_border" CornerRadius="10,10,10,10" Grid.Column="0" Width="40" Height="40" Margin="5px" HorizontalAlignment="Center" BorderThickness="1,1,1,1">
+                                <Border.Background>
+                                    <ImageBrush x:Name="audioImagePath" RenderOptions.BitmapScalingMode="HighQuality"/>
+                                </Border.Background>
+                            </Border>
+
+                            <StackPanel Grid.Column="1"  Orientation="Vertical" VerticalAlignment="Center" HorizontalAlignment="Left" Margin="5 0 0 0">
+                                <TextBlock TextWrapping="WrapWithOverflow" VerticalAlignment="Center" HorizontalAlignment="Left" Margin="0 0 0 5" ><Run Foreground="White" d:Text="Yeu em hon da tung" x:Name="name" FontSize="16"/></TextBlock>
+                            <TextBlock TextWrapping="WrapWithOverflow" VerticalAlignment="Center" HorizontalAlignment="Left" ><Run Foreground="#FFE4F9FF" FontWeight="SemiBold" d:Text="fsdfsd" x:Name="singer" FontSize="14"/></TextBlock>
                         </StackPanel>
                     </StackPanel>
 
@@ -251,17 +260,21 @@
                             </Button>
                         </StackPanel>
                         <StackPanel Orientation="Horizontal" Margin=" 0 0 0 5">
-                            <TextBlock Width="50" Text="{Binding RunTime}" d:Text="00:01" TextAlignment="Right"></TextBlock>
-                            <Slider x:Name="slider" VerticalAlignment="Center" Width="380" IsSelectionRangeEnabled="True" Value="5" SelectionEnd="{Binding ElementName=slider, Path=Value}" />
-                            <TextBlock Width="50" Text="{Binding EndTime}" d:Text="03:05:31" TextAlignment="Left"></TextBlock>
+                            <TextBlock Width="45" x:Name="currentPosition" d:Text="00:01" TextAlignment="Right"></TextBlock>
+                            <Slider x:Name="slider" VerticalAlignment="Center" Width="370" IsSelectionRangeEnabled="True" Thumb.DragStarted="slideProgress_DragStarted" Thumb.DragCompleted="slideProgress_DragCompleted" ValueChanged="slideProgress_ValueChanged" />
+                            <TextBlock Width="45" x:Name="totalPosition" d:Text="03:05:31" TextAlignment="Left"></TextBlock>
                         </StackPanel>
                     </StackPanel>
 
-                    <StackPanel Grid.Column="2" HorizontalAlignment="Right" VerticalAlignment="Center">
-                        <Button Name="Shuffle_Button" Click="Shuffle_Button_CLick" Style="{StaticResource playerButton}" Margin="0 0 10 0">
-                            <Icon:PackIconMaterial x:Name="IsSuffle" Kind="Shuffle" Style="{StaticResource playerButtonIcon}" Height="20" Width="20"/>
-                        </Button>
-                    </StackPanel>
+                        <StackPanel Orientation="Horizontal" Grid.Column="2" HorizontalAlignment="Right" VerticalAlignment="Center" Margin="0 0 10 0">
+                            <Button Name="Shuffle_Button" Click="Shuffle_Button_CLick" Style="{StaticResource playerButton}" >
+                                <Icon:PackIconMaterial x:Name="IsSuffle" Kind="ShuffleDisabled" Style="{StaticResource playerButtonIcon}" Height="20" Width="20"/>
+                            </Button>
+                            <TextBlock Width="90" FontSize="16" VerticalAlignment="Center" HorizontalAlignment="Center" TextAlignment="Left">
+                                <Run x:Name="shuffeMode" Foreground="White" />
+                                <Run Foreground="Red" Text="On"/>
+                            </TextBlock>
+                        </StackPanel>
                 </Grid>
                 </Border>
             </Grid>
