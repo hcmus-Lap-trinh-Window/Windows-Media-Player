@@ -50,6 +50,7 @@ namespace Media_Player_App
 
         private void timer_Tick(object sender, EventArgs e)
         {
+            new BitmapImage();
             if ((media.Source != null) && (media.NaturalDuration.HasTimeSpan) && (!userIsDraggingTimeSlider))
             {
                 slider.Minimum = 0;
@@ -65,7 +66,6 @@ namespace Media_Player_App
             // init flag for tracking media player's state
             isMediaPlaying = false;
             isMediaSuffle = true;
-
             if (isMediaSuffle)
             {
                 IsSuffle.Kind = MahApps.Metro.IconPacks.PackIconMaterialKind.Shuffle;
@@ -107,14 +107,14 @@ namespace Media_Player_App
             {
                 var _currentPlaying = screen.FileName;
                 FileInfo fileInfo = new FileInfo(_currentPlaying);
-                Media newMedia = new Media()
-                {
-                    Name = fileInfo.Name,
-                    Singer = "Truong Cong Thanh",
-                    ImagePath = Directory.GetCurrentDirectory() + @"/Images/thanh.png",
-                    FullPath = new Uri(_currentPlaying),
-                };               
-
+                //Media newMedia = new Media()
+                //{
+                //    Name = fileInfo.Name,
+                //    Singer = "Truong Cong Thanh",
+                //    ImagePath = Directory.GetCurrentDirectory() + @"/Images/thanh.png",
+                //    FullPath = new Uri(_currentPlaying),
+                //};               
+                Media newMedia = new Media(_currentPlaying);
                 var isDuplicate = _PlayLists.Where(c => c.FullPath == newMedia.FullPath && c.Name == newMedia.Name).ToArray();
                 if (isDuplicate == null || isDuplicate.Length <= 0)
                 {
@@ -478,9 +478,11 @@ namespace Media_Player_App
             UpdatePlayButton();
 
             name.Text = CurrentMedia.Name;
-            singer.Text = CurrentMedia.Singer;            
-            audioImagePath.ImageSource = Utilities.covertStringtoBitmapImage(CurrentMedia.ImagePath);
-            audioImagePath_border.BorderBrush = Brushes.White;
+            singer.Text = CurrentMedia.Singer;
+            //audioImagePath.ImageSource = Utilities.covertStringtoBitmapImage(CurrentMedia.ImagePath);
+            audioImagePath.ImageSource = CurrentMedia.Image;
+            //audioImagePath_border.BorderBrush = Brushes.White;
+            //audioImagePath.Source = CurrentMedia.Image;
             #endregion
 
         }
@@ -620,20 +622,20 @@ namespace Media_Player_App
 
         public void SaveRecentlyPlayed()
         {
-            try
-            {
-                // serialize top 50 recently played
-                var recentlyPlayedJson = JsonSerializer.Serialize(_RecentlyPlayed.TakeNLast(Utilities.MaxRecentlyPlayed));
-                if (recentlyPlayedJson != null )
-                {
-                    var fileName = Directory.GetCurrentDirectory() + @$"\\{Utilities.RecentlyPlayed}\\{Utilities.RecentlyPlayed}.json";
-                    SaveJson(fileName, recentlyPlayedJson, true);
-                }
-            }
-            catch(Exception ex)
-            {
-                throw new Exception(ex.Message, ex.InnerException ?? ex);
-            }
+            //try
+            //{
+            //    // serialize top 50 recently played
+            //    var recentlyPlayedJson = JsonSerializer.Serialize(_RecentlyPlayed.TakeNLast(Utilities.MaxRecentlyPlayed));
+            //    if (recentlyPlayedJson != null )
+            //    {
+            //        var fileName = Directory.GetCurrentDirectory() + @$"\\{Utilities.RecentlyPlayed}\\{Utilities.RecentlyPlayed}.json";
+            //        SaveJson(fileName, recentlyPlayedJson, true);
+            //    }
+            //}
+            //catch(Exception ex)
+            //{
+            //    throw new Exception(ex.Message, ex.InnerException ?? ex);
+            //}
         }
     }
 }

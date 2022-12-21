@@ -13,6 +13,11 @@
         Icon="./Images/icon.png"
         Title="Media Player" MinHeight="650" MinWidth="1360"
         Closed="Window_Closed">
+    <Window.Resources>
+        <Storyboard x:Key="imageRotationStoryboard" Storyboard.TargetName="rotatedImage" Storyboard.TargetProperty="RenderTransform.(RotateTransform.Angle)">
+            <DoubleAnimation From="0" To="360" BeginTime="0:0:0" Duration="0:0:10" RepeatBehavior="Forever"/>
+        </Storyboard>
+    </Window.Resources>
     <DockPanel LastChildFill="True" Margin="10px">
 
         <StackPanel Orientation ="Horizontal" VerticalAlignment="Center" DockPanel.Dock="Top" Background="White">
@@ -72,7 +77,8 @@
                                     <Image Grid.Column="0" Width="25" Height="25" VerticalAlignment="Center" Source="/Images/play.png" HorizontalAlignment="Center" RenderOptions.BitmapScalingMode="HighQuality"/>
                                     <Border Grid.Column="1" CornerRadius="10,10,10,10" Width="35" Height="35" Margin="5px" VerticalAlignment="Center" HorizontalAlignment="Center" BorderBrush="#FFBDDDFF" BorderThickness="1,1,1,1">
                                         <Border.Background>
-                                            <ImageBrush ImageSource="{Binding ImagePath}" RenderOptions.BitmapScalingMode="HighQuality"/>
+                                            <!--<ImageBrush ImageSource="{Binding ImagePath}" RenderOptions.BitmapScalingMode="HighQuality"/>-->
+                                            <ImageBrush ImageSource="{Binding Image}" RenderOptions.BitmapScalingMode="HighQuality"/>
                                         </Border.Background>
                                     </Border>
                                     <StackPanel Grid.Column="2"  Orientation="Vertical" VerticalAlignment="Center" HorizontalAlignment="Left" Margin="5 0 0 0">
@@ -118,7 +124,8 @@
                                     <Image Grid.Column="0" Width="25" Height="25" VerticalAlignment="Center" Source="/Images/pause.png" HorizontalAlignment="Center" RenderOptions.BitmapScalingMode="HighQuality"/>
                                     <Border Grid.Column="1" CornerRadius="10,10,10,10" Width="35" Height="35" Margin="5px" VerticalAlignment="Center" HorizontalAlignment="Center" BorderBrush="#FFBDDDFF" BorderThickness="1,1,1,1">
                                         <Border.Background>
-                                            <ImageBrush ImageSource="{Binding ImagePath}" RenderOptions.BitmapScalingMode="HighQuality"/>
+                                            <!--<ImageBrush ImageSource="{Binding ImagePath}" RenderOptions.BitmapScalingMode="HighQuality"/>-->
+                                            <ImageBrush ImageSource="{Binding Image}" RenderOptions.BitmapScalingMode="HighQuality"/>
                                         </Border.Background>
                                     </Border>
                                     <StackPanel Grid.Column="2"  Orientation="Vertical" VerticalAlignment="Center" HorizontalAlignment="Left" Margin="5 0 0 0">
@@ -237,11 +244,27 @@
                         <ColumnDefinition  Width="*"/>
                     </Grid.ColumnDefinitions>
                     <StackPanel Orientation="Horizontal" Grid.Column="0">
-                            <Border x:Name="audioImagePath_border" CornerRadius="10,10,10,10" Grid.Column="0" Width="40" Height="40" Margin="5px" HorizontalAlignment="Center" BorderThickness="1,1,1,1">
+                            <!--<Border x:Name="audioImagePath_border" CornerRadius="10,10,10,10" Grid.Column="0" Width="40" Height="40" Margin="5px" HorizontalAlignment="Center" BorderThickness="1,1,1,1">
                                 <Border.Background>
-                                    <ImageBrush x:Name="audioImagePath" RenderOptions.BitmapScalingMode="HighQuality"/>
+                                    <ImageBrush x:Name="audioImagePath" RenderOptions.BitmapScalingMode="HighQuality">                                    </ImageBrush>
                                 </Border.Background>
-                            </Border>
+                            </Border>-->
+
+                            <Ellipse x:Name="rotatedImage" Grid.Column="0" Width="50" Height="50" Margin="5px" HorizontalAlignment="Center" Stroke="White" StrokeThickness="1">
+                                <Ellipse.Fill>
+                                    <ImageBrush x:Name="audioImagePath" RenderOptions.BitmapScalingMode="HighQuality" ImageSource="Images\musical-note.png"></ImageBrush>
+                                </Ellipse.Fill>
+                                <Ellipse.Triggers>
+                                    <EventTrigger RoutedEvent="FrameworkElement.Loaded">
+                                        <EventTrigger.Actions>
+                                            <BeginStoryboard Storyboard="{StaticResource imageRotationStoryboard}" />
+                                        </EventTrigger.Actions>
+                                    </EventTrigger>
+                                </Ellipse.Triggers>
+                                <Ellipse.RenderTransform>
+                                    <RotateTransform Angle="0" CenterX="25" CenterY="25" />
+                                </Ellipse.RenderTransform>
+                            </Ellipse>
 
                             <StackPanel Grid.Column="1"  Orientation="Vertical" VerticalAlignment="Center" HorizontalAlignment="Left" Margin="5 0 0 0">
                                 <TextBlock TextWrapping="WrapWithOverflow" VerticalAlignment="Center" HorizontalAlignment="Left" Margin="0 0 0 5" ><Run Foreground="White" d:Text="Yeu em hon da tung" x:Name="name" FontSize="16"/></TextBlock>
