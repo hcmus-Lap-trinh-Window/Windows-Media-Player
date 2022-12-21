@@ -32,11 +32,11 @@ namespace Media_Player_App
 
         private DispatcherTimer timer;
         private List<int> _PlaylistHistory = new List<int>();
+        private List<Media> _RecentlyPlayed = new List<Media>();
 
         private Media CurrentMedia = null;
         private ObservableCollection<Media> _PlayLists;
         private ObservableCollection<String> _PlayListComboBox;
-        private const string PlayListFolder = "PlayList";
 
         public MainWindow()
         {
@@ -66,11 +66,12 @@ namespace Media_Player_App
             isMediaPlaying = false;
             isMediaSuffle = true;
 
-            if(isMediaSuffle)
+            if (isMediaSuffle)
             {
                 IsSuffle.Kind = MahApps.Metro.IconPacks.PackIconMaterialKind.Shuffle;
                 shuffeMode.Text = "Shuffle: ";
-            } else
+            }
+            else
             {
                 IsSuffle.Kind = MahApps.Metro.IconPacks.PackIconMaterialKind.ShuffleDisabled;
                 shuffeMode.Text = "Normal: ";
@@ -82,8 +83,20 @@ namespace Media_Player_App
             Playlists.SelectionMode = System.Windows.Controls.SelectionMode.Single;
 
             // init playlist combo box
-            _PlayListComboBox = new ObservableCollection<string>(GetAllJsonFile(PlayListFolder).Select(c => c.getFileName()).OrderBy(c => c).ToList());
+            _PlayListComboBox = new ObservableCollection<string>(GetAllJsonFile(Utilities.PlayListFolder).Select(c => c.getFileName()).OrderBy(c => c).ToList());
             PlaylistComboBox.ItemsSource = _PlayListComboBox;
+
+            // load recently played
+            var recentlyPlayedFileName = GetAllJsonFile(Utilities.RecentlyPlayed).LastOrDefault();
+            if (!string.IsNullOrEmpty(recentlyPlayedFileName))
+            {
+                var recentlyPlayedDirectory = Directory.GetCurrentDirectory() + $@"\\{Utilities.RecentlyPlayed}\\{recentlyPlayedFileName}";
+                var recentlyPlayedJson = File.ReadAllText(recentlyPlayedDirectory);
+                if (recentlyPlayedJson != null)
+                {
+                    _RecentlyPlayed = JsonSerializer.Deserialize<List<Media>>(recentlyPlayedJson);
+                }
+            }
         }
 
         private void New_File_Button_Click(object sender, RoutedEventArgs e)
@@ -117,7 +130,9 @@ namespace Media_Player_App
             // add new media to playlist and playlist history
             _PlayLists.Add(newMedia);
             if (isMediaSuffle && _PlayLists.Count > 1)
+            {
                 _PlaylistHistory.Add(_PlayLists.IndexOf(newMedia) - 1);
+            }
 
             #region set change in UI
 
@@ -129,6 +144,9 @@ namespace Media_Player_App
 
             CurrentMedia = newMedia;
             Playlists.SelectedItem = CurrentMedia;
+
+            _RecentlyPlayed.Add(newMedia);
+            SaveRecentlyPlayed();
 
             #endregion                    
         }
@@ -142,7 +160,7 @@ namespace Media_Player_App
                 {
                     return;
                 }
-                var playListDirectory = Directory.GetCurrentDirectory() + $"\\{PlayListFolder}\\{playListSelected}.json";
+                var playListDirectory = Directory.GetCurrentDirectory() + $"\\{Utilities.PlayListFolder}\\{playListSelected}.json";
                 var playListContent = File.ReadAllText(playListDirectory);
                 if (playListContent != null)
                 {
@@ -181,12 +199,18 @@ namespace Media_Player_App
                     if (_PlayLists != null && _PlayLists.Count > 0)
                     {
                         var playListFileName = playListName + ".json";
-                        var playListDirectory = Directory.GetCurrentDirectory() + $@"\\{PlayListFolder}\\";
+                        var playListDirectory = Directory.GetCurrentDirectory() + $@"\\{Utilities.PlayListFolder}\\";
                         var playListJson = JsonSerializer.Serialize(_PlayLists);
                         SaveJson(playListDirectory + playListFileName, playListJson);
                         if (!_PlayListComboBox.Contains(playListName))
                         {
                             _PlayListComboBox.Add(playListName);
+                            HandyControl.Controls.MessageBox.Show(new MessageBoxInfo()
+                            {
+                                Message = "Save PlayList Successfully",
+                                Caption = "Save PlayList",
+                                Button = MessageBoxButton.OK,
+                            });
                         }
                     }
                     else
@@ -218,12 +242,6 @@ namespace Media_Player_App
                 if (!listFile.Contains(fileName, StringComparer.OrdinalIgnoreCase) || isOverride == true)
                 {
                     File.WriteAllText(filePath, data);
-                    HandyControl.Controls.MessageBox.Show(new MessageBoxInfo()
-                    {
-                        Message = "Save PlayList Successfully",
-                        Caption = "Save PlayList",
-                        Button = MessageBoxButton.OK,
-                    });
                 }
                 else
                 {
@@ -412,19 +430,7 @@ namespace Media_Player_App
 
         private void Shuffle_Button_CLick(object sender, RoutedEventArgs e)
         {
-            if (isMediaSuffle)
-            {
-                isMediaSuffle = false;
-                IsSuffle.Kind = MahApps.Metro.IconPacks.PackIconMaterialKind.ShuffleDisabled;
-                shuffeMode.Text = "Normal:";
-            }
-            else
-            {
-                IsSuffle.Kind = MahApps.Metro.IconPacks.PackIconMaterialKind.Shuffle;
-                isMediaSuffle = true;
-                shuffeMode.Text = "Shuffle:";
-            }
-            UpdatePlayButton();
+            UpdateShuffleButton();
         }
         private void UpdatePlayButton()
         {
@@ -435,6 +441,25 @@ namespace Media_Player_App
             else
             {
                 IsPlaying.Kind = MahApps.Metro.IconPacks.PackIconMaterialKind.Play;
+            }
+        }
+        private void UpdateShuffleButton()
+        {
+            if (isMediaSuffle)
+            {
+                if (isMediaSuffle)
+                {
+                    isMediaSuffle = false;
+                    IsSuffle.Kind = MahApps.Metro.IconPacks.PackIconMaterialKind.ShuffleDisabled;
+                    shuffeMode.Text = "Normal:";
+                }
+                else
+                {
+                    IsSuffle.Kind = MahApps.Metro.IconPacks.PackIconMaterialKind.Shuffle;
+                    isMediaSuffle = true;
+                    shuffeMode.Text = "Shuffle:";
+                }
+                UpdatePlayButton();
             }
         }
 
@@ -586,6 +611,28 @@ namespace Media_Player_App
                 slider.Value = media.Position.TotalSeconds;
                 currentPosition.Text = TimeSpan.FromSeconds(slider.Value).ToString(@"hh\:mm\:ss");
             }
-        }       
+        }
+
+        private void Window_Closed(object sender, EventArgs e)
+        {
+            SaveRecentlyPlayed();
+        }
+
+        public void SaveRecentlyPlayed()
+        {
+            try
+            {
+                var recentlyPlayedJson = JsonSerializer.Serialize(_RecentlyPlayed);
+                if (recentlyPlayedJson != null )
+                {
+                    var fileName = Directory.GetCurrentDirectory() + @$"\\{Utilities.RecentlyPlayed}\\RecentlyPlayed.json";
+                    SaveJson(fileName, recentlyPlayedJson, true);
+                }
+            }
+            catch(Exception ex)
+            {
+                throw new Exception(ex.Message, ex.InnerException ?? ex);
+            }
+        }
     }
 }

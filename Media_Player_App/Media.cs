@@ -15,7 +15,5 @@ namespace Media_Player_App
         public string? Singer { get; set; }
         public string? ImagePath { get; set; }
         public Uri? FullPath { get; set; }
-        public string? RunTime { get; set; }
-        public string? EndTime { get; set; }
     }
 }
