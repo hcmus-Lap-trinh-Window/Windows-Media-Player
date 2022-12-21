@@ -622,10 +622,11 @@ namespace Media_Player_App
         {
             try
             {
-                var recentlyPlayedJson = JsonSerializer.Serialize(_RecentlyPlayed);
+                // serialize top 50 recently played
+                var recentlyPlayedJson = JsonSerializer.Serialize(_RecentlyPlayed.TakeNLast(Utilities.MaxRecentlyPlayed));
                 if (recentlyPlayedJson != null )
                 {
-                    var fileName = Directory.GetCurrentDirectory() + @$"\\{Utilities.RecentlyPlayed}\\RecentlyPlayed.json";
+                    var fileName = Directory.GetCurrentDirectory() + @$"\\{Utilities.RecentlyPlayed}\\{Utilities.RecentlyPlayed}.json";
                     SaveJson(fileName, recentlyPlayedJson, true);
                 }
             }

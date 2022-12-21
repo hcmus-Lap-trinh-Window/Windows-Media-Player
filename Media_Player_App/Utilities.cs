@@ -7,10 +7,11 @@ using System.Windows.Media.Imaging;
 
 namespace Media_Player_App
 {
-    public class Utilities
+    public static class Utilities
     {
         public const string PlayListFolder = "PlayList";
         public const string RecentlyPlayed = "RecentlyPlayed";
+        public const int MaxRecentlyPlayed = 50;
         public static BitmapImage covertStringtoBitmapImage(string url)
         {
             var bitmap = new BitmapImage();
@@ -23,6 +24,11 @@ namespace Media_Player_App
         public static DateTime DoubleToDateTime(double dDateTime)
         {
             return DateTime.FromOADate(dDateTime);
+        }
+        // take N last element of a list
+        public static IEnumerable<T> TakeNLast<T>(this IEnumerable<T> list, int N)
+        {
+            return list.Skip(Math.Max(0, list.Count() - N));
         }
     }
 }
