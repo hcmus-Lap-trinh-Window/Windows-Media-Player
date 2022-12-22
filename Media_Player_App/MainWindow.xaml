@@ -24,7 +24,7 @@
             
         </StackPanel>
         <DockPanel LastChildFill="True">
-            <DockPanel DockPanel.Dock="Left" LastChildFill="True" Margin="0, 0, 5, 0">
+            <DockPanel DockPanel.Dock="Left" LastChildFill="True" Margin="0, 0, 10, 0">
                 <StackPanel Orientation="Horizontal" HorizontalAlignment="Stretch" VerticalAlignment="Center" Margin="5,0,0,0"
                            DockPanel.Dock="Top">
                     <TextBlock VerticalAlignment="Center"  Text="Select Playlist: " Width="80"/>
@@ -56,137 +56,221 @@
                         </StackPanel>
                     </Button>
                 </StackPanel>
-                <ListView 
-                SelectionMode="Multiple"
-                SelectionChanged="PlayList_SelectionChanged" 
-                Margin="5,0,5,0"
-                Name="Playlists"
-                ScrollViewer.HorizontalScrollBarVisibility="Disabled"
-                ScrollViewer.VerticalScrollBarVisibility="Auto" d:ItemsSource="{d:SampleData ItemCount=2}" HorizontalAlignment="Center" Width="388">
-                    <ListView.Resources>
-                        <!--Layout for Default Item-->
-                        <DataTemplate x:Key="DefaultItemTemplate" >
-                            <StackPanel x:Name="RuleRow" Height="50" Width="370" HorizontalAlignment="Stretch" VerticalAlignment="Center" Background="#FFBDDDFF" >
-                                <Grid Height="50" Width="370" HorizontalAlignment="Stretch">
-                                    <Grid.ColumnDefinitions>
-                                        <ColumnDefinition  Width="*"/>
-                                        <ColumnDefinition  Width="*"/>
-                                        <ColumnDefinition  Width="5*"/>
-                                        <ColumnDefinition  Width="*"/>
-                                    </Grid.ColumnDefinitions>
-                                    <Image Grid.Column="0" Width="25" Height="25" VerticalAlignment="Center" Source="/Images/play.png" HorizontalAlignment="Center" RenderOptions.BitmapScalingMode="HighQuality"/>
-                                    <Border Grid.Column="1" CornerRadius="10,10,10,10" Width="35" Height="35" Margin="5px" VerticalAlignment="Center" HorizontalAlignment="Center" BorderBrush="#FFBDDDFF" BorderThickness="1,1,1,1">
-                                        <Border.Background>
-                                            <!--<ImageBrush ImageSource="{Binding ImagePath}" RenderOptions.BitmapScalingMode="HighQuality"/>-->
-                                            <ImageBrush ImageSource="{Binding Image}" RenderOptions.BitmapScalingMode="HighQuality"/>
-                                        </Border.Background>
-                                    </Border>
-                                    <StackPanel Grid.Column="2"  Orientation="Vertical" VerticalAlignment="Center" HorizontalAlignment="Left" Margin="5 0 0 0">
-                                        <TextBlock  TextWrapping="NoWrap" VerticalAlignment="Center" Height="20" HorizontalAlignment="Left" ><Run  Text="{Binding Name}" FontSize="14"/></TextBlock>
-                                        <TextBlock  TextWrapping="NoWrap" VerticalAlignment="Center" Height="20" HorizontalAlignment="Left" ><Run Text="{Binding Singer}" FontSize="14"/></TextBlock>
-                                    </StackPanel>
-                                    <Button x:Name="Remove_File_Button" CommandParameter="{Binding}" Click="Remove_File_Button_Click" Grid.Column="3" Width="20" Cursor="Hand" Padding="3,3,3,3" VerticalAlignment="Center" BorderThickness="0" Background="Transparent" HorizontalAlignment="Center">
-                                        <Button.Style>
-                                            <Style TargetType="{x:Type Button}">
-                                                <Setter Property="Background" Value="Transparent"/>
-                                                <Setter Property="Template">
-                                                    <Setter.Value>
-                                                        <ControlTemplate TargetType="{x:Type Button}">
-                                                            <Border Background="{TemplateBinding Background}" BorderBrush="Black" BorderThickness="0">
-                                                                <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center"/>
-                                                            </Border>
-                                                        </ControlTemplate>
-                                                    </Setter.Value>
-                                                </Setter>
-                                                <Style.Triggers>
-                                                    <Trigger Property="IsMouseOver" Value="True">
+                <TabControl>
+                    <TabItem Header="Now Playing">
+                        <ListView 
+                        SelectionMode="Multiple"
+                        SelectionChanged="PlayList_SelectionChanged" 
+                        Margin="5,0,5,0"
+                        Name="Playlists"
+                        ScrollViewer.HorizontalScrollBarVisibility="Disabled"
+                        ScrollViewer.VerticalScrollBarVisibility="Auto" d:ItemsSource="{d:SampleData ItemCount=2}" HorizontalAlignment="Center" Width="388">
+                            <ListView.Resources>
+                                <!--Layout for Default Item-->
+                                <DataTemplate x:Key="DefaultItemTemplate" >
+                                    <StackPanel x:Name="RuleRow" Height="50" Width="370" HorizontalAlignment="Stretch" VerticalAlignment="Center" Background="#FFBDDDFF" >
+                                        <Grid Height="50" Width="370" HorizontalAlignment="Stretch">
+                                            <Grid.ColumnDefinitions>
+                                                <ColumnDefinition  Width="*"/>
+                                                <ColumnDefinition  Width="*"/>
+                                                <ColumnDefinition  Width="5*"/>
+                                                <ColumnDefinition  Width="*"/>
+                                            </Grid.ColumnDefinitions>
+                                            <Button Name="List_Item_Play_Button" Grid.Column="0" Background="#ffffff" Foreground="#FFBDDDFF" Style="{StaticResource playerButtonPlaylist}">
+                                                <Icon:PackIconMaterial Kind="Play" Margin="3 0 0 0" Width="15" Height="15"/>
+                                            </Button>
+                                            <Border Grid.Column="1" CornerRadius="10,10,10,10" Width="35" Height="35" Margin="5px" VerticalAlignment="Center" HorizontalAlignment="Center" BorderBrush="#FFBDDDFF" BorderThickness="1,1,1,1">
+                                                <Border.Background>
+                                                    <!--<ImageBrush ImageSource="{Binding ImagePath}" RenderOptions.BitmapScalingMode="HighQuality"/>-->
+                                                    <ImageBrush ImageSource="{Binding Image}" RenderOptions.BitmapScalingMode="HighQuality"/>
+                                                </Border.Background>
+                                            </Border>
+                                            <StackPanel Grid.Column="2"  Orientation="Vertical" VerticalAlignment="Center" HorizontalAlignment="Left" Margin="5 0 0 0">
+                                                <TextBlock  TextWrapping="NoWrap" VerticalAlignment="Center" Height="20" HorizontalAlignment="Left" ><Run  Text="{Binding Name}" FontSize="14"/></TextBlock>
+                                                <TextBlock  TextWrapping="NoWrap" VerticalAlignment="Center" Height="20" HorizontalAlignment="Left" ><Run Text="{Binding Singer}" FontSize="14"/></TextBlock>
+                                            </StackPanel>
+                                            <Button x:Name="Remove_File_Button" CommandParameter="{Binding}" Click="Remove_File_Button_Click" Grid.Column="3" Width="20" Cursor="Hand" Padding="3,3,3,3" VerticalAlignment="Center" BorderThickness="0" Background="Transparent" HorizontalAlignment="Center">
+                                                <Button.Style>
+                                                    <Style TargetType="{x:Type Button}">
                                                         <Setter Property="Background" Value="Transparent"/>
-                                                    </Trigger>
-                                                </Style.Triggers>
-                                            </Style>
-                                        </Button.Style>
-                                        <Image Source="/Images/dustbin.png" RenderOptions.BitmapScalingMode="HighQuality"/>
-                                    </Button>
-                                </Grid>
-                            </StackPanel>
-                        </DataTemplate>
-
-                        <!--Layout for Selected Item-->
-                        <DataTemplate x:Key="SelectedItemTemplate">
-                            <StackPanel x:Name="RuleRow" Height="50" Width="370" HorizontalAlignment="Stretch" VerticalAlignment="Center" Background="White">
-                                <Grid Height="50" Width="370">
-                                    <Grid.ColumnDefinitions>
-                                        <ColumnDefinition  Width="*"/>
-                                        <ColumnDefinition  Width="*"/>
-                                        <ColumnDefinition  Width="5*"/>
-                                        <ColumnDefinition  Width="*"/>
-                                    </Grid.ColumnDefinitions>
-                                    <Image Grid.Column="0" Width="25" Height="25" VerticalAlignment="Center" Source="/Images/pause.png" HorizontalAlignment="Center" RenderOptions.BitmapScalingMode="HighQuality"/>
-                                    <Border Grid.Column="1" CornerRadius="10,10,10,10" Width="35" Height="35" Margin="5px" VerticalAlignment="Center" HorizontalAlignment="Center" BorderBrush="#FFBDDDFF" BorderThickness="1,1,1,1">
-                                        <Border.Background>
-                                            <!--<ImageBrush ImageSource="{Binding ImagePath}" RenderOptions.BitmapScalingMode="HighQuality"/>-->
-                                            <ImageBrush ImageSource="{Binding Image}" RenderOptions.BitmapScalingMode="HighQuality"/>
-                                        </Border.Background>
-                                    </Border>
-                                    <StackPanel Grid.Column="2"  Orientation="Vertical" VerticalAlignment="Center" HorizontalAlignment="Left" Margin="5 0 0 0">
-                                        <TextBlock  TextWrapping="NoWrap" VerticalAlignment="Center" Height="20" HorizontalAlignment="Left" ><Run Text="{Binding Name}" FontSize="14"/></TextBlock>
-                                        <TextBlock  TextWrapping="NoWrap" VerticalAlignment="Center" Height="20" HorizontalAlignment="Left" ><Run Text="{Binding Singer}" FontSize="14"/></TextBlock>
+                                                        <Setter Property="Template">
+                                                            <Setter.Value>
+                                                                <ControlTemplate TargetType="{x:Type Button}">
+                                                                    <Border Background="{TemplateBinding Background}" BorderBrush="Black" BorderThickness="0">
+                                                                        <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                                                                    </Border>
+                                                                </ControlTemplate>
+                                                            </Setter.Value>
+                                                        </Setter>
+                                                        <Style.Triggers>
+                                                            <Trigger Property="IsMouseOver" Value="True">
+                                                                <Setter Property="Background" Value="Transparent"/>
+                                                            </Trigger>
+                                                        </Style.Triggers>
+                                                    </Style>
+                                                </Button.Style>
+                                                <Image Source="/Images/dustbin.png" RenderOptions.BitmapScalingMode="HighQuality"/>
+                                            </Button>
+                                        </Grid>
                                     </StackPanel>
-                                    <Button x:Name="Remove_File_Button" CommandParameter="{Binding}" Click="Remove_File_Button_Click" Grid.Column="3" Width="20" Cursor="Hand" Padding="3,3,3,3" VerticalAlignment="Center" BorderThickness="0" Background="Transparent" HorizontalAlignment="Center">
-                                        <Button.Style>
-                                            <Style TargetType="{x:Type Button}">
-                                                <Setter Property="Background" Value="Transparent"/>
-                                                <Setter Property="Template">
-                                                    <Setter.Value>
-                                                        <ControlTemplate TargetType="{x:Type Button}">
-                                                            <Border Background="{TemplateBinding Background}" BorderBrush="Black" BorderThickness="0">
-                                                                <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center"/>
-                                                            </Border>
-                                                        </ControlTemplate>
-                                                    </Setter.Value>
-                                                </Setter>
-                                                <Style.Triggers>
-                                                    <Trigger Property="IsMouseOver" Value="True">
-                                                        <Setter Property="Background" Value="Transparent"/>
-                                                    </Trigger>
-                                                </Style.Triggers>
-                                            </Style>
-                                        </Button.Style>
-                                        <Image Source="/Images/dustbin.png" RenderOptions.BitmapScalingMode="HighQuality"/>
-                                    </Button>
-                                </Grid>
-                            </StackPanel>
-                        </DataTemplate>
-                    </ListView.Resources>
-                    <ListView.Background>
-                        <SolidColorBrush Color="#FFBDDDFF"/>
-                    </ListView.Background>
-                    <ListView.ItemContainerStyle>
-                        <Style TargetType="ListBoxItem">
-                            <Setter Property="HorizontalContentAlignment" Value="Center"/>
-                            <Setter Property="Margin" Value="0,0,0,5"/>
-                            <Setter Property="Height" Value="50" />
-                            <Setter Property="Padding" Value="0.7" />
-                            <Setter Property="VerticalContentAlignment" Value="Center"/>
-                            <Setter Property="ContentTemplate" Value="{StaticResource DefaultItemTemplate}" />
-                            <Setter Property="Background" Value="White"/>
-                            <Setter Property="AllowDrop" Value="true"/>
-                            <EventSetter Event="PreviewMouseLeftButtonDown" Handler="ListBoxItem_MouseLeftButtonDown"/>
-                            <EventSetter Event="PreviewMouseLeftButtonUp" Handler="ListBoxItem_MouseLeftButtonUp"/>
-                            <EventSetter Event="PreviewMouseMove" Handler="ListBoxItem_MouseMove"/>
-                            <EventSetter Event="Drop" Handler="ListBoxItem_Drop"/>
-                            <EventSetter Event="PreviewMouseRightButtonDown"  Handler="OnPreviewMouseDown"/>
-                            <Style.Triggers>
-                                <Trigger Property="IsSelected"  Value="True">
-                                    <Setter Property="ContentTemplate" Value="{StaticResource SelectedItemTemplate}" />
-                                </Trigger>
-                            </Style.Triggers>
-                        </Style>
+                                </DataTemplate>
 
-                    </ListView.ItemContainerStyle>
-                </ListView>
+                                <!--Layout for Selected Item-->
+                                <DataTemplate x:Key="SelectedItemTemplate">
+                                    <StackPanel x:Name="RuleRow" Height="50" Width="370" HorizontalAlignment="Stretch" VerticalAlignment="Center" Background="White">
+                                        <Grid Height="50" Width="370">
+                                            <Grid.ColumnDefinitions>
+                                                <ColumnDefinition  Width="*"/>
+                                                <ColumnDefinition  Width="*"/>
+                                                <ColumnDefinition  Width="5*"/>
+                                                <ColumnDefinition  Width="*"/>
+                                            </Grid.ColumnDefinitions>
+                                            <Button Name="List_Item_Pause_Button" Grid.Column="0" Background="#FFBDDDFF" Foreground="#FFFFFFFF" Style="{StaticResource playerButtonPlaylist}">
+                                                <Icon:PackIconMaterial Kind="Pause" Width="15" Height="15"/>
+                                            </Button>
+                                            <Border Grid.Column="1" CornerRadius="10,10,10,10" Width="35" Height="35" Margin="5px" VerticalAlignment="Center" HorizontalAlignment="Center" BorderBrush="#FFBDDDFF" BorderThickness="1,1,1,1">
+                                                <Border.Background>
+                                                    <!--<ImageBrush ImageSource="{Binding ImagePath}" RenderOptions.BitmapScalingMode="HighQuality"/>-->
+                                                    <ImageBrush ImageSource="{Binding Image}" RenderOptions.BitmapScalingMode="HighQuality"/>
+                                                </Border.Background>
+                                            </Border>
+                                            <StackPanel Grid.Column="2"  Orientation="Vertical" VerticalAlignment="Center" HorizontalAlignment="Left" Margin="5 0 0 0">
+                                                <TextBlock  TextWrapping="NoWrap" VerticalAlignment="Center" Height="20" HorizontalAlignment="Left" ><Run Text="{Binding Name}" FontSize="14"/></TextBlock>
+                                                <TextBlock  TextWrapping="NoWrap" VerticalAlignment="Center" Height="20" HorizontalAlignment="Left" ><Run Text="{Binding Singer}" FontSize="14"/></TextBlock>
+                                            </StackPanel>
+                                            <Button x:Name="Remove_File_Button" CommandParameter="{Binding}" Click="Remove_File_Button_Click" Grid.Column="3" Width="20" Cursor="Hand" Padding="3,3,3,3" VerticalAlignment="Center" BorderThickness="0" Background="Transparent" HorizontalAlignment="Center">
+                                                <Button.Style>
+                                                    <Style TargetType="{x:Type Button}">
+                                                        <Setter Property="Background" Value="Transparent"/>
+                                                        <Setter Property="Template">
+                                                            <Setter.Value>
+                                                                <ControlTemplate TargetType="{x:Type Button}">
+                                                                    <Border Background="{TemplateBinding Background}" BorderBrush="Black" BorderThickness="0">
+                                                                        <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                                                                    </Border>
+                                                                </ControlTemplate>
+                                                            </Setter.Value>
+                                                        </Setter>
+                                                        <Style.Triggers>
+                                                            <Trigger Property="IsMouseOver" Value="True">
+                                                                <Setter Property="Background" Value="Transparent"/>
+                                                            </Trigger>
+                                                        </Style.Triggers>
+                                                    </Style>
+                                                </Button.Style>
+                                                <Image Source="/Images/dustbin.png" RenderOptions.BitmapScalingMode="HighQuality"/>
+                                            </Button>
+                                        </Grid>
+                                    </StackPanel>
+                                </DataTemplate>
+                            </ListView.Resources>
+                            <ListView.Background>
+                                <SolidColorBrush Color="#FFBDDDFF"/>
+                            </ListView.Background>
+                            <ListView.ItemContainerStyle>
+                                <Style TargetType="ListBoxItem">
+                                    <Setter Property="HorizontalContentAlignment" Value="Center"/>
+                                    <Setter Property="Margin" Value="0,0,0,5"/>
+                                    <Setter Property="Height" Value="50" />
+                                    <Setter Property="Padding" Value="0.7" />
+                                    <Setter Property="VerticalContentAlignment" Value="Center"/>
+                                    <Setter Property="ContentTemplate" Value="{StaticResource DefaultItemTemplate}" />
+                                    <Setter Property="Background" Value="White"/>
+                                    <Setter Property="AllowDrop" Value="true"/>
+                                    <EventSetter Event="PreviewMouseLeftButtonDown" Handler="ListBoxItem_MouseLeftButtonDown"/>
+                                    <EventSetter Event="PreviewMouseLeftButtonUp" Handler="ListBoxItem_MouseLeftButtonUp"/>
+                                    <EventSetter Event="PreviewMouseMove" Handler="ListBoxItem_MouseMove"/>
+                                    <EventSetter Event="Drop" Handler="ListBoxItem_Drop"/>
+                                    <EventSetter Event="PreviewMouseRightButtonDown"  Handler="OnPreviewMouseDown"/>
+                                    <Style.Triggers>
+                                        <Trigger Property="IsSelected"  Value="True">
+                                            <Setter Property="ContentTemplate" Value="{StaticResource SelectedItemTemplate}" />
+                                        </Trigger>
+                                    </Style.Triggers>
+                                </Style>
+
+                            </ListView.ItemContainerStyle>
+                        </ListView>
+                    </TabItem>
+                    <TabItem Header="Recent Played">
+                        <ListView 
+                        SelectionMode="Multiple"
+                        SelectionChanged="RecentPlayList_SelectionChanged" 
+                        Margin="5,0,5,0"
+                        Name="RecentPlaylists"
+                        ScrollViewer.HorizontalScrollBarVisibility="Disabled"
+                        ScrollViewer.VerticalScrollBarVisibility="Auto" d:ItemsSource="{d:SampleData ItemCount=2}" HorizontalAlignment="Center" Width="388">    
+                            <ListView.Resources>
+                                <!--Layout for Default Item-->
+                                <DataTemplate x:Key="DefaultRecentItemTemplate" >
+                                    <StackPanel x:Name="RuleRow" Height="50" Width="370" HorizontalAlignment="Stretch" VerticalAlignment="Center" Background="#FFBDDDFF" >
+                                        <Grid Height="50" Width="370" HorizontalAlignment="Stretch">
+                                            <Grid.ColumnDefinitions>
+                                                <ColumnDefinition  Width="*"/>
+                                                <ColumnDefinition  Width="4*"/>
+                                                <ColumnDefinition  Width="2*"/>
+                                            </Grid.ColumnDefinitions>
+                                            <Border Grid.Column="0" CornerRadius="10,10,10,10" Width="35" Height="35" Margin="5px" VerticalAlignment="Center" HorizontalAlignment="Center" BorderBrush="#FFBDDDFF" BorderThickness="1,1,1,1">
+                                                <Border.Background>
+                                                    <ImageBrush ImageSource="{Binding Image}" RenderOptions.BitmapScalingMode="HighQuality"/>
+                                                </Border.Background>
+                                            </Border>
+                                            <StackPanel Grid.Column="1"  Orientation="Vertical" VerticalAlignment="Center" HorizontalAlignment="Left" Margin="5 0 0 0">
+                                                <TextBlock  TextWrapping="NoWrap" VerticalAlignment="Center" Height="20" HorizontalAlignment="Left" ><Run  Text="{Binding Name}" FontSize="14"/></TextBlock>
+                                                <TextBlock  TextWrapping="NoWrap" VerticalAlignment="Center" Height="20" HorizontalAlignment="Left" ><Run Text="{Binding Singer}" FontSize="14"/></TextBlock>
+                                            </StackPanel>
+                                            <Button x:Name="Add_Recent_File_Button" Grid.Column="2" Cursor="Hand" Padding="3,3,3,3" VerticalAlignment="Center" HorizontalAlignment="Center">
+                                                <Button.Style>
+                                                    <Style TargetType="{x:Type Button}">
+                                                        <Setter Property="Background" Value="#ffffff"/>
+                                                        <Setter Property="Foreground" Value="#FFBDDDFF" />
+                                                        <Setter Property="Height" Value="35" />
+                                                        <Setter Property="Width" Value="35" />
+                                                        <Setter Property="FocusVisualStyle" Value="{x:Null}" />
+                                                        <Setter Property="Template">
+                                                            <Setter.Value>
+                                                                <ControlTemplate TargetType="{x:Type Button}">
+                                                                    <Border Background="{TemplateBinding Background}" CornerRadius="50">
+                                                                        <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                                                                    </Border>
+                                                                </ControlTemplate>
+                                                            </Setter.Value>
+                                                        </Setter>
+                                                        <Style.Triggers>
+                                                            <Trigger Property="IsMouseOver" Value="True">
+                                                                <Setter Property="Background" Value="Transparent"/>
+                                                            </Trigger>
+                                                        </Style.Triggers>
+                                                    </Style>
+                                                </Button.Style>
+                                                <Icon:PackIconMaterial Kind="Play" Margin="3 0 0 0" Width="15" Height="15"/>
+                                            </Button>
+                                        </Grid>
+                                    </StackPanel>
+                                </DataTemplate>
+
+                            </ListView.Resources>
+                            <ListView.Background>
+                                <SolidColorBrush Color="#FFBDDDFF"/>
+                            </ListView.Background>
+                            <ListView.ItemContainerStyle>
+                                <Style TargetType="ListBoxItem">
+                                    <Setter Property="HorizontalContentAlignment" Value="Center"/>
+                                    <Setter Property="Margin" Value="0,0,0,5"/>
+                                    <Setter Property="Height" Value="50" />
+                                    <Setter Property="Padding" Value="0.7" />
+                                    <Setter Property="VerticalContentAlignment" Value="Center"/>
+                                    <Setter Property="ContentTemplate" Value="{StaticResource DefaultRecentItemTemplate}" />
+                                    <Setter Property="Background" Value="White"/>
+                                    <EventSetter Event="PreviewMouseLeftButtonDown" Handler="ListBoxItem_MouseLeftButtonDown"/>
+                                </Style>
+
+                            </ListView.ItemContainerStyle>
+                        </ListView>
+                    </TabItem>
+                </TabControl>
             </DockPanel>
-            <Grid DockPanel.Dock="Right">
+            <Grid DockPanel.Dock="Right" Margin="0, 0, 5, 0">
                 <Grid.RowDefinitions>
                     <RowDefinition  Height="68"/>
                     <RowDefinition  Height="*"/>
@@ -243,13 +327,7 @@
                         <ColumnDefinition  Width="2*"/>
                         <ColumnDefinition  Width="*"/>
                     </Grid.ColumnDefinitions>
-                    <StackPanel Orientation="Horizontal" Grid.Column="0">
-                            <!--<Border x:Name="audioImagePath_border" CornerRadius="10,10,10,10" Grid.Column="0" Width="40" Height="40" Margin="5px" HorizontalAlignment="Center" BorderThickness="1,1,1,1">
-                                <Border.Background>
-                                    <ImageBrush x:Name="audioImagePath" RenderOptions.BitmapScalingMode="HighQuality">                                    </ImageBrush>
-                                </Border.Background>
-                            </Border>-->
-
+                        <StackPanel Orientation="Horizontal" Grid.Column="0" Visibility="Hidden" Name="Media_Detail">
                             <Ellipse x:Name="rotatedImage" Grid.Column="0" Width="50" Height="50" Margin="5px" HorizontalAlignment="Center" Stroke="White" StrokeThickness="1">
                                 <Ellipse.Fill>
                                     <ImageBrush x:Name="audioImagePath" RenderOptions.BitmapScalingMode="HighQuality" ImageSource="Images\musical-note.png"></ImageBrush>

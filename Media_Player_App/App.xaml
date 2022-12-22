@@ -47,6 +47,23 @@
                 </Style.Triggers>
             </Style>
 
+            <Style x:Key="playerButtonPlaylist" TargetType="Button">
+                <Setter Property="Height" Value="35" />
+                <Setter Property="Width" Value="35" />
+                <Setter Property="Margin" Value="3 0" />
+                <Setter Property="FocusVisualStyle" Value="{x:Null}" />
+                <Setter Property="Tag" Value="Collapsed" />
+                <Setter Property="Template">
+                    <Setter.Value>
+                        <ControlTemplate TargetType="Button">
+                            <Border Background="{TemplateBinding Background}" CornerRadius="50">
+                                <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                            </Border>
+                        </ControlTemplate>
+                    </Setter.Value>
+                </Setter>
+            </Style>
+
             <Style x:Key="playerButtonIcon" TargetType="Icon:PackIconMaterial" >
                 <Setter Property="Width" Value="17" />
                 <Setter Property="Height" Value="17" />

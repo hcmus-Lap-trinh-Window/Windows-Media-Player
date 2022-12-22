@@ -25,7 +25,7 @@ namespace Media_Player_App
     public partial class MainWindow : Window
     {
         private bool isMediaPlaying = false;
-        private bool isMediaSuffle = false;
+        private bool isMediaShuffle = false;
         private bool isMediaNewFile = false;
         private bool userIsDraggingTimeSlider = false;
         private bool userIsDraggingVolumeSlider = false;
@@ -66,8 +66,8 @@ namespace Media_Player_App
         {
             // init flag for tracking media player's state
             isMediaPlaying = false;
-            isMediaSuffle = true;
-            if (isMediaSuffle)
+            isMediaShuffle = true;
+            if (isMediaShuffle)
             {
                 IsSuffle.Kind = MahApps.Metro.IconPacks.PackIconMaterialKind.Shuffle;
                 shuffeMode.Text = "Shuffle: ";
@@ -93,10 +93,10 @@ namespace Media_Player_App
             {
                 var recentlyPlayedDirectory = Directory.GetCurrentDirectory() + $@"\\{Utilities.RecentlyPlayed}\\{recentlyPlayedFileName}";
                 var recentlyPlayedJson = File.ReadAllText(recentlyPlayedDirectory);
-                if (recentlyPlayedJson != null)
-                {
-                    _RecentlyPlayed = JsonSerializer.Deserialize<List<Uri>>(recentlyPlayedJson);
-                }
+                //if (recentlyPlayedJson != null)
+                //{
+                //    _RecentlyPlayed = JsonSerializer.Deserialize<List<Uri>>(recentlyPlayedJson);
+                //}
             }
         }
 
@@ -130,7 +130,7 @@ namespace Media_Player_App
         {
             // add new media to playlist and playlist history
             _PlayLists.Add(newMedia);
-            if (isMediaSuffle && _PlayLists.Count > 1)
+            if (isMediaShuffle && _PlayLists.Count > 1)
             {
                 _PlaylistHistory.Add(_PlayLists.IndexOf(newMedia) - 1);
             }
@@ -367,7 +367,7 @@ namespace Media_Player_App
             var currentMediaIndex = Playlists.SelectedIndex;
             int mediaIndex;
 
-            if (isMediaSuffle)
+            if (isMediaShuffle)
             {
                 if (_PlaylistHistory.Count > 0)
                 {
@@ -425,7 +425,7 @@ namespace Media_Player_App
             int mediaIndex;
             Previous_Button.IsEnabled = true;
 
-            if (isMediaSuffle)
+            if (isMediaShuffle)
             {
                 Random randInt = new Random();
                 mediaIndex = randInt.Next(0, _PlayLists.Count);
@@ -464,18 +464,18 @@ namespace Media_Player_App
         }
         private void UpdateShuffleButton()
         {
-            if (isMediaSuffle)
+            if (isMediaShuffle)
             {
-                if (isMediaSuffle)
+                if (isMediaShuffle)
                 {
-                    isMediaSuffle = false;
+                    isMediaShuffle = false;
                     IsSuffle.Kind = MahApps.Metro.IconPacks.PackIconMaterialKind.ShuffleDisabled;
                     shuffeMode.Text = "Normal:";
                 }
                 else
                 {
                     IsSuffle.Kind = MahApps.Metro.IconPacks.PackIconMaterialKind.Shuffle;
-                    isMediaSuffle = true;
+                    isMediaShuffle = true;
                     shuffeMode.Text = "Shuffle:";
                 }
                 UpdatePlayButton();
@@ -485,6 +485,7 @@ namespace Media_Player_App
         private void media_MediaOpened(object sender, RoutedEventArgs e)
         {
             #region set change in UI
+            Media_Detail.Visibility = Visibility.Visible;
             Control_Button_Group.Visibility = Visibility.Visible;
             Progress_Time.Visibility = Visibility.Visible;
             Shuffle_Volume_Group.Visibility = Visibility.Visible;
@@ -532,7 +533,7 @@ namespace Media_Player_App
                 return;
             }
 
-            if (isMediaSuffle)
+            if (isMediaShuffle)
             {
                 Random randInt = new Random();
                 mediaIndex = randInt.Next(0, _PlayLists.Count);
@@ -681,6 +682,11 @@ namespace Media_Player_App
                 Shuffle_Button.Visibility = Visibility.Visible;
                 Volume_Button.Visibility = Visibility.Visible;
             }
+        }
+
+        private void RecentPlayList_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        {
+
         }
     }
 }
