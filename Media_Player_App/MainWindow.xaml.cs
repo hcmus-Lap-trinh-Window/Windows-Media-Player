@@ -29,10 +29,11 @@ namespace Media_Player_App
         private bool isMediaNewFile = false;
         private bool userIsDraggingTimeSlider = false;
         private bool userIsDraggingVolumeSlider = false;
+        private bool needHiddenUI = true;
 
         private DispatcherTimer timer;
         private List<int> _PlaylistHistory = new List<int>();
-        private List<Media> _RecentlyPlayed = new List<Media>();
+        private List<Uri> _RecentlyPlayed = new List<Uri>();
 
         private Media CurrentMedia = null;
         private ObservableCollection<Media> _PlayLists;
@@ -94,7 +95,7 @@ namespace Media_Player_App
                 var recentlyPlayedJson = File.ReadAllText(recentlyPlayedDirectory);
                 if (recentlyPlayedJson != null)
                 {
-                    _RecentlyPlayed = JsonSerializer.Deserialize<List<Media>>(recentlyPlayedJson);
+                    _RecentlyPlayed = JsonSerializer.Deserialize<List<Uri>>(recentlyPlayedJson);
                 }
             }
         }
@@ -145,9 +146,11 @@ namespace Media_Player_App
             CurrentMedia = newMedia;
             Playlists.SelectedItem = CurrentMedia;
 
-            _RecentlyPlayed.Add(newMedia);
+            _RecentlyPlayed.Add(newMedia.FullPath);
             SaveRecentlyPlayed();
 
+            needHiddenUI = false;
+            UpdateHiddenUI();
             #endregion                    
         }
 
@@ -186,7 +189,8 @@ namespace Media_Player_App
         private void Clear_All_Files_In_Playlist_Btn_Click(object sender, RoutedEventArgs e)
         {
             _PlayLists.Clear();
-            media.Source = null;
+            needHiddenUI = true;
+            UpdateHiddenUI();
         }
 
         private void Add_Playlist_Button_CLick(object sender, RoutedEventArgs e)
@@ -310,7 +314,22 @@ namespace Media_Player_App
 
         private void Remove_File_Button_Click(object sender, RoutedEventArgs e)
         {
+            if (sender != null)
+            {
+                Button b = sender as Button;
+                Media deletedMedia = b.CommandParameter as Media;
+                if (deletedMedia != null)
+                {
+                    if (CurrentMedia == deletedMedia)
+                    {
+                        needHiddenUI = true;
+                        UpdateHiddenUI();
+                    }
+                    _PlayLists.Remove(deletedMedia);
 
+                }
+
+            }
         }
 
         private void ListBoxItem_MouseLeftButtonDown(object sender, MouseButtonEventArgs e)
@@ -622,20 +641,46 @@ namespace Media_Player_App
 
         public void SaveRecentlyPlayed()
         {
-            //try
-            //{
-            //    // serialize top 50 recently played
-            //    var recentlyPlayedJson = JsonSerializer.Serialize(_RecentlyPlayed.TakeNLast(Utilities.MaxRecentlyPlayed));
-            //    if (recentlyPlayedJson != null )
-            //    {
-            //        var fileName = Directory.GetCurrentDirectory() + @$"\\{Utilities.RecentlyPlayed}\\{Utilities.RecentlyPlayed}.json";
-            //        SaveJson(fileName, recentlyPlayedJson, true);
-            //    }
-            //}
-            //catch(Exception ex)
-            //{
-            //    throw new Exception(ex.Message, ex.InnerException ?? ex);
-            //}
+            try
+            {
+                // serialize top 50 recently played
+                var recentlyPlayedJson = JsonSerializer.Serialize(_RecentlyPlayed.TakeNLast(Utilities.MaxRecentlyPlayed));
+                if (recentlyPlayedJson != null)
+                {
+                    var fileName = Directory.GetCurrentDirectory() + @$"\\{Utilities.RecentlyPlayed}\\{Utilities.RecentlyPlayed}.json";
+                    SaveJson(fileName, recentlyPlayedJson, true);
+                }
+            }
+            catch (Exception ex)
+            {
+                throw new Exception(ex.Message, ex.InnerException ?? ex);
+            }
+        }
+
+        private void UpdateHiddenUI()
+        {
+            if (needHiddenUI)
+            {
+                media.Source = null;
+                name.Text = string.Empty;
+                singer.Text = string.Empty;
+                audioImagePath.ImageSource = new BitmapImage(new Uri(@"Images\musical-note.png", UriKind.RelativeOrAbsolute));
+                Progress_Time.Visibility = Visibility.Hidden;
+                Next_Button.Visibility = Visibility.Hidden;
+                Previous_Button.Visibility = Visibility.Hidden;
+                Play_Button.Visibility = Visibility.Hidden;
+                Shuffle_Button.Visibility = Visibility.Hidden;
+                Volume_Button.Visibility = Visibility.Hidden;
+            }
+            else
+            {
+                Progress_Time.Visibility = Visibility.Visible;
+                Next_Button.Visibility = Visibility.Visible;
+                Previous_Button.Visibility = Visibility.Visible;
+                Play_Button.Visibility = Visibility.Visible;
+                Shuffle_Button.Visibility = Visibility.Visible;
+                Volume_Button.Visibility = Visibility.Visible;
+            }
         }
     }
 }
