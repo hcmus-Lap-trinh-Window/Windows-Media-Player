@@ -33,7 +33,7 @@ namespace Media_Player_App
 
         private DispatcherTimer timer;
         private List<int> _PlaylistHistory = new List<int>();
-        private List<Uri> _RecentlyPlayed = new List<Uri>();
+        private ObservableCollection<Media> _RecentlyPlayed = new ObservableCollection<Media>();
 
         private Media CurrentMedia = null;
         private ObservableCollection<Media> _PlayLists;
@@ -93,10 +93,18 @@ namespace Media_Player_App
             {
                 var recentlyPlayedDirectory = Directory.GetCurrentDirectory() + $@"\\{Utilities.RecentlyPlayed}\\{recentlyPlayedFileName}";
                 var recentlyPlayedJson = File.ReadAllText(recentlyPlayedDirectory);
-                //if (recentlyPlayedJson != null)
-                //{
-                //    _RecentlyPlayed = JsonSerializer.Deserialize<List<Uri>>(recentlyPlayedJson);
-                //}
+                if (recentlyPlayedJson != null)
+                {
+                    var temp = JsonSerializer.Deserialize<List<Uri>>(recentlyPlayedJson);
+                    if (temp != null && temp.Count > 0)
+                    {
+                        foreach(var uri in temp)
+                        {
+                            _RecentlyPlayed.Add(new Media(uri.AbsolutePath));
+                        }
+                        RecentPlaylists.ItemsSource = _RecentlyPlayed.TakeNLast(50).Reverse();
+                    }
+                }
             }
         }
 
@@ -107,14 +115,7 @@ namespace Media_Player_App
             if (screen.ShowDialog() == true)
             {
                 var _currentPlaying = screen.FileName;
-                FileInfo fileInfo = new FileInfo(_currentPlaying);
-                //Media newMedia = new Media()
-                //{
-                //    Name = fileInfo.Name,
-                //    Singer = "Truong Cong Thanh",
-                //    ImagePath = Directory.GetCurrentDirectory() + @"/Images/thanh.png",
-                //    FullPath = new Uri(_currentPlaying),
-                //};               
+                FileInfo fileInfo = new FileInfo(_currentPlaying);            
                 Media newMedia = new Media(_currentPlaying);
                 var isDuplicate = _PlayLists.Where(c => c.FullPath == newMedia.FullPath && c.Name == newMedia.Name).ToArray();
                 if (isDuplicate == null || isDuplicate.Length <= 0)
@@ -146,7 +147,8 @@ namespace Media_Player_App
             CurrentMedia = newMedia;
             Playlists.SelectedItem = CurrentMedia;
 
-            _RecentlyPlayed.Add(newMedia.FullPath);
+            _RecentlyPlayed.Add(newMedia);
+            RecentPlaylists.ItemsSource = _RecentlyPlayed.TakeLast(50).Reverse();
             SaveRecentlyPlayed();
 
             needHiddenUI = false;
@@ -322,8 +324,17 @@ namespace Media_Player_App
                 {
                     if (CurrentMedia == deletedMedia)
                     {
-                        needHiddenUI = true;
-                        UpdateHiddenUI();
+                        int deletedIndex = _PlayLists.IndexOf(deletedMedia);
+                        if (deletedIndex == _PlayLists.Count - 1)
+                        {
+                            needHiddenUI = true;
+                            UpdateHiddenUI();
+                        }
+                        else
+                        {
+                            int nextIndex = ++deletedIndex;
+                            Playlists.SelectedIndex = nextIndex;
+                        }
                     }
                     _PlayLists.Remove(deletedMedia);
 
@@ -645,7 +656,7 @@ namespace Media_Player_App
             try
             {
                 // serialize top 50 recently played
-                var recentlyPlayedJson = JsonSerializer.Serialize(_RecentlyPlayed.TakeNLast(Utilities.MaxRecentlyPlayed));
+                var recentlyPlayedJson = JsonSerializer.Serialize(_RecentlyPlayed.TakeNLast(Utilities.MaxRecentlyPlayed).Select(c=>c.FullPath));
                 if (recentlyPlayedJson != null)
                 {
                     var fileName = Directory.GetCurrentDirectory() + @$"\\{Utilities.RecentlyPlayed}\\{Utilities.RecentlyPlayed}.json";
@@ -686,7 +697,22 @@ namespace Media_Player_App
 
         private void RecentPlayList_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
-
+            try
+            {
+                var selectedRecentSong = (Media) RecentPlaylists.SelectedItem;
+                if (selectedRecentSong!= null)
+                {
+                    _PlayLists.Clear();
+                    _PlayLists.Add(selectedRecentSong);
+                    Playlists.SelectedItem = selectedRecentSong;
+                    _RecentlyPlayed.Add(selectedRecentSong);
+                    RecentPlaylists.ItemsSource = _RecentlyPlayed.TakeNLast(50).Reverse();
+                }
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show(MessageType.Error, "Errors", String.Format("{0}. {1}", ex.Message, ex.InnerException?.Message));
+            }
         }
     }
 }

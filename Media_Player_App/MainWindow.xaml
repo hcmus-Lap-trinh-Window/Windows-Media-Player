@@ -59,7 +59,7 @@
                 <TabControl>
                     <TabItem Header="Queue">
                         <ListView 
-                        SelectionMode="Multiple"
+                        SelectionMode="Single"
                         SelectionChanged="PlayList_SelectionChanged" 
                         Margin="5,0,5,0"
                         Name="Playlists"
@@ -194,7 +194,7 @@
                     </TabItem>
                     <TabItem Header="Recently Played">
                         <ListView 
-                        SelectionMode="Multiple"
+                        SelectionMode="Single"
                         SelectionChanged="RecentPlayList_SelectionChanged" 
                         Margin="5,0,5,0"
                         Name="RecentPlaylists"
