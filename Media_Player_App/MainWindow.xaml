@@ -21,7 +21,7 @@
     <DockPanel LastChildFill="True" Margin="10px">
 
         <StackPanel Orientation ="Horizontal" VerticalAlignment="Center" DockPanel.Dock="Top" Background="White">
-            
+
         </StackPanel>
         <DockPanel LastChildFill="True">
             <DockPanel DockPanel.Dock="Left" LastChildFill="True" Margin="0, 0, 10, 0">
@@ -58,13 +58,16 @@
                 </StackPanel>
                 <TabControl>
                     <TabItem Header="Queue">
-                        <ListView 
+                        <ListView
                         SelectionMode="Single"
                         SelectionChanged="PlayList_SelectionChanged" 
                         Margin="5,0,5,0"
                         Name="Playlists"
                         ScrollViewer.HorizontalScrollBarVisibility="Disabled"
-                        ScrollViewer.VerticalScrollBarVisibility="Auto" d:ItemsSource="{d:SampleData ItemCount=2}" HorizontalAlignment="Center" Width="388">
+                        ScrollViewer.VerticalScrollBarVisibility="Auto" d:ItemsSource="{d:SampleData ItemCount=2}"
+                        AllowDrop="True"
+                        DragDrop.Drop="ListBoxItem_Drop"
+                        HorizontalAlignment="Center" Width="388">
                             <ListView.Resources>
                                 <!--Layout for Default Item-->
                                 <DataTemplate x:Key="DefaultItemTemplate" >
@@ -199,7 +202,7 @@
                         Margin="5,0,5,0"
                         Name="RecentPlaylists"
                         ScrollViewer.HorizontalScrollBarVisibility="Disabled"
-                        ScrollViewer.VerticalScrollBarVisibility="Auto" d:ItemsSource="{d:SampleData ItemCount=2}" HorizontalAlignment="Center" Width="388">    
+                        ScrollViewer.VerticalScrollBarVisibility="Auto" d:ItemsSource="{d:SampleData ItemCount=2}" HorizontalAlignment="Center" Width="388">
                             <ListView.Resources>
                                 <!--Layout for Default Item-->
                                 <DataTemplate x:Key="DefaultRecentItemTemplate" >
@@ -322,11 +325,11 @@
                 </DockPanel>
                 <Border Grid.Row="2" BorderBrush="white" BorderThickness="1,0,1,1">
                     <Grid  VerticalAlignment="Center" Background="#FFBDDDFF" Height="80" Margin="0 0 0 5">
-                    <Grid.ColumnDefinitions>
-                        <ColumnDefinition  Width="*"/>
-                        <ColumnDefinition  Width="2*"/>
-                        <ColumnDefinition  Width="*"/>
-                    </Grid.ColumnDefinitions>
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition  Width="*"/>
+                            <ColumnDefinition  Width="2*"/>
+                            <ColumnDefinition  Width="*"/>
+                        </Grid.ColumnDefinitions>
                         <StackPanel Orientation="Horizontal" Grid.Column="0" Visibility="Hidden" Name="Media_Detail">
                             <Ellipse x:Name="rotatedImage" Grid.Column="0" Width="50" Height="50" Margin="5px" HorizontalAlignment="Center" Stroke="White" StrokeThickness="1">
                                 <Ellipse.Fill>
@@ -346,28 +349,28 @@
 
                             <StackPanel Grid.Column="1"  Orientation="Vertical" VerticalAlignment="Center" HorizontalAlignment="Left" Margin="5 0 0 0">
                                 <TextBlock TextWrapping="WrapWithOverflow" VerticalAlignment="Center" HorizontalAlignment="Left" Margin="0 0 0 5" ><Run Foreground="White" d:Text="Yeu em hon da tung" x:Name="name" FontSize="16"/></TextBlock>
-                            <TextBlock TextWrapping="WrapWithOverflow" VerticalAlignment="Center" HorizontalAlignment="Left" ><Run Foreground="#FFE4F9FF" FontWeight="SemiBold" d:Text="fsdfsd" x:Name="singer" FontSize="14"/></TextBlock>
+                                <TextBlock TextWrapping="WrapWithOverflow" VerticalAlignment="Center" HorizontalAlignment="Left" ><Run Foreground="#FFE4F9FF" FontWeight="SemiBold" d:Text="fsdfsd" x:Name="singer" FontSize="14"/></TextBlock>
+                            </StackPanel>
                         </StackPanel>
-                    </StackPanel>
 
-                    <StackPanel Grid.Column="1" HorizontalAlignment="Center" VerticalAlignment="Center">
-                        <StackPanel x:Name="Control_Button_Group" Visibility="Hidden" Orientation="Horizontal" VerticalAlignment="Center" HorizontalAlignment="Center">
-                            <Button Name="Previous_Button" Click="Previous_Button_CLick" Style="{StaticResource playerButton}">
-                                <Icon:PackIconMaterial Kind="SkipPrevious" Style="{StaticResource playerButtonIcon}"/>
-                            </Button>
-                            <Button Name="Play_Button" Click="Play_Button_CLick" Style="{StaticResource playerButton}">
-                                <Icon:PackIconMaterial Name="IsPlaying" Kind="Pause" Style="{StaticResource playerButtonIcon}"/>
-                            </Button>
-                            <Button Name="Next_Button" Click="Next_Button_CLick" Style="{StaticResource playerButton}">
-                                <Icon:PackIconMaterial Kind="SkipNext" Style="{StaticResource playerButtonIcon}"/>
-                            </Button>
+                        <StackPanel Grid.Column="1" HorizontalAlignment="Center" VerticalAlignment="Center">
+                            <StackPanel x:Name="Control_Button_Group" Visibility="Hidden" Orientation="Horizontal" VerticalAlignment="Center" HorizontalAlignment="Center">
+                                <Button Name="Previous_Button" Click="Previous_Button_CLick" Style="{StaticResource playerButton}">
+                                    <Icon:PackIconMaterial Kind="SkipPrevious" Style="{StaticResource playerButtonIcon}"/>
+                                </Button>
+                                <Button Name="Play_Button" Click="Play_Button_CLick" Style="{StaticResource playerButton}">
+                                    <Icon:PackIconMaterial Name="IsPlaying" Kind="Pause" Style="{StaticResource playerButtonIcon}"/>
+                                </Button>
+                                <Button Name="Next_Button" Click="Next_Button_CLick" Style="{StaticResource playerButton}">
+                                    <Icon:PackIconMaterial Kind="SkipNext" Style="{StaticResource playerButtonIcon}"/>
+                                </Button>
+                            </StackPanel>
+                            <StackPanel x:Name="Progress_Time" Visibility="Hidden" Orientation="Horizontal" Margin=" 0 0 0 5">
+                                <TextBlock Width="45" x:Name="currentPosition" d:Text="00:01" TextAlignment="Right"></TextBlock>
+                                <Slider x:Name="slider" VerticalAlignment="Center" Width="370" IsSelectionRangeEnabled="True" Thumb.DragStarted="slideProgress_DragStarted" Thumb.DragCompleted="slideProgress_DragCompleted" ValueChanged="slideProgress_ValueChanged" />
+                                <TextBlock Width="45" x:Name="totalPosition" d:Text="03:05:31" TextAlignment="Left"></TextBlock>
+                            </StackPanel>
                         </StackPanel>
-                        <StackPanel x:Name="Progress_Time" Visibility="Hidden" Orientation="Horizontal" Margin=" 0 0 0 5">
-                            <TextBlock Width="45" x:Name="currentPosition" d:Text="00:01" TextAlignment="Right"></TextBlock>
-                            <Slider x:Name="slider" VerticalAlignment="Center" Width="370" IsSelectionRangeEnabled="True" Thumb.DragStarted="slideProgress_DragStarted" Thumb.DragCompleted="slideProgress_DragCompleted" ValueChanged="slideProgress_ValueChanged" />
-                            <TextBlock Width="45" x:Name="totalPosition" d:Text="03:05:31" TextAlignment="Left"></TextBlock>
-                        </StackPanel>
-                    </StackPanel>
 
                         <StackPanel x:Name="Shuffle_Volume_Group" Visibility="Hidden"  Grid.Column="2" Orientation="Vertical" HorizontalAlignment="Right" VerticalAlignment="Center" Margin="0 0 10 0">
                             <StackPanel x:Name="Shuffle_Group" Orientation="Horizontal" VerticalAlignment="Center" >
@@ -376,7 +379,7 @@
                                 </Button>
                                 <TextBlock Width="90" FontSize="16" VerticalAlignment="Center" HorizontalAlignment="Center" TextAlignment="Left">
                                     <Run x:Name="shuffeMode" Foreground="White" />
-                                    <Run Foreground="Red" Text="On"/>       
+                                    <Run Foreground="Red" Text="On"/>
                                 </TextBlock>
                             </StackPanel>
                             <StackPanel x:Name="Volume_Group" Orientation="Horizontal" VerticalAlignment="Center">

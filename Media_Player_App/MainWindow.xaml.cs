@@ -1,19 +1,14 @@
 ﻿using HandyControl.Data;
-using HandyControl.Tools.Extension;
 using Microsoft.Win32;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
-using System.Diagnostics.Contracts;
-using System.DirectoryServices;
 using System.IO;
 using System.Linq;
-using System.Numerics;
 using System.Text.Json;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
-using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Threading;
 
@@ -98,7 +93,7 @@ namespace Media_Player_App
                     var temp = JsonSerializer.Deserialize<List<Uri>>(recentlyPlayedJson);
                     if (temp != null && temp.Count > 0)
                     {
-                        foreach(var uri in temp)
+                        foreach (var uri in temp)
                         {
                             _RecentlyPlayed.Add(new Media(uri.AbsolutePath));
                         }
@@ -109,51 +104,75 @@ namespace Media_Player_App
         }
 
         private void New_File_Button_Click(object sender, RoutedEventArgs e)
+
         {
-            var screen = new OpenFileDialog();
-            screen.Filter = "Media Files (*.mp3; *.mp4)|*.mp3;*.mp4|All files (*.*)|*.*";
-            if (screen.ShowDialog() == true)
+            try
             {
-                var _currentPlaying = screen.FileName;
-                FileInfo fileInfo = new FileInfo(_currentPlaying);            
-                Media newMedia = new Media(_currentPlaying);
-                var isDuplicate = _PlayLists.Where(c => c.FullPath == newMedia.FullPath && c.Name == newMedia.Name).ToArray();
-                if (isDuplicate == null || isDuplicate.Length <= 0)
+                var screen = new OpenFileDialog
                 {
-                    // we have the flow: -> load file -> if not duplicate -> add to playlist -> play the newest song, update button in UI -> set CurrentMedia = new song
-                    // -> set selected item in playlist = new song
-                    handleChangeWhenAddNewFile(_currentPlaying, newMedia);
+                    Multiselect = true,
+                    Filter = "Media Files (*.mp3; *.mp4; *.mkv)|*.mp3;*.mp4;*.mkv|All files (*.*)|*.*",
+                    Title = "Choose media files"
+                };
+                if (screen.ShowDialog() == true)
+                {
+                    var newFileList = screen.FileNames;                         // Get danh sách các file được chọn
+                    var _currentPlaying = newFileList[0];                       // Get file đầu tiên trong danh sách
+                    FileInfo fileInfo = new FileInfo(_currentPlaying);
+                    foreach (var newFile in newFileList)
+                    {
+                        Media newMedia = new Media(newFile);
+                        var isDuplicate = _PlayLists.Where(c => c.FullPath == newMedia.FullPath && c.Name == newMedia.Name).ToArray();
+                        if (isDuplicate == null || isDuplicate.Length <= 0)
+                        {
+                            // we have the flow: -> load file -> if not duplicate -> add to playlist -> play the newest song, update button in UI -> set CurrentMedia = new song
+                            // -> set selected item in playlist = new song
+                            handleChangeWhenAddNewFile(newFile, newMedia);
+                        }
+                    }
                 }
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show(MessageType.Error, "Has error when adding new media file.", $"{ex.Message}");
             }
         }
 
         private void handleChangeWhenAddNewFile(string filePath, Media newMedia)
         {
-            // add new media to playlist and playlist history
-            _PlayLists.Add(newMedia);
-            if (isMediaShuffle && _PlayLists.Count > 1)
+            try
             {
-                _PlaylistHistory.Add(_PlayLists.IndexOf(newMedia) - 1);
+                // add new media to playlist and playlist history
+                _PlayLists.Add(newMedia);
+                if (isMediaShuffle && _PlayLists.Count > 1)
+                {
+                    _PlaylistHistory.Add(_PlayLists.IndexOf(newMedia) - 1);
+                }
+
+                #region set change in UI
+
+                //media.Source = new Uri(filePath, UriKind.Absolute);
+                ////media.Play();
+
+                Next_Button.IsEnabled = _PlayLists.Count > 1 ? true : false;
+                Previous_Button.IsEnabled = _PlayLists.Count > 1 ? true : false;
+
+                //CurrentMedia = newMedia;
+                //Playlists.SelectedItem = CurrentMedia;
+
+                //_RecentlyPlayed.Add(newMedia);
+                //RecentPlaylists.ItemsSource = _RecentlyPlayed.TakeLast(50).Reverse();
+                //SaveRecentlyPlayed();
+
+                needHiddenUI = false;
+                UpdateHiddenUI();
+                #endregion
+
             }
-
-            #region set change in UI
-
-            media.Source = new Uri(filePath, UriKind.Absolute);
-            media.Play();
-
-            Next_Button.IsEnabled = _PlayLists.Count > 1 ? true : false;
-            Previous_Button.IsEnabled = _PlayLists.Count > 1 ? true : false;
-
-            CurrentMedia = newMedia;
-            Playlists.SelectedItem = CurrentMedia;
-
-            _RecentlyPlayed.Add(newMedia);
-            RecentPlaylists.ItemsSource = _RecentlyPlayed.TakeLast(50).Reverse();
-            SaveRecentlyPlayed();
-
-            needHiddenUI = false;
-            UpdateHiddenUI();
-            #endregion                    
+            catch (Exception ex)
+            {
+                throw new Exception($"handleChangeWhenAddNewFile failed. Has Exception[{ex.Message} {ex.InnerException.Message ?? String.Empty}]");
+            }
         }
 
         private void PlaylistComboBox_SelectionChanged(object sender, SelectionChangedEventArgs e)
@@ -360,7 +379,29 @@ namespace Media_Player_App
 
         private void ListBoxItem_Drop(object sender, DragEventArgs e)
         {
-
+            try
+            {
+                if (e.Data.GetDataPresent(DataFormats.FileDrop))
+                {
+                    // Note that you can have more than one file.
+                    string[] newFileList = (string[])e.Data.GetData(DataFormats.FileDrop);
+                    foreach (var newFile in newFileList)
+                    {
+                        Media newMedia = new Media(newFile);
+                        var isDuplicate = _PlayLists.Where(c => c.FullPath == newMedia.FullPath && c.Name == newMedia.Name).ToArray();
+                        if (isDuplicate == null || isDuplicate.Length <= 0)
+                        {
+                            // we have the flow: -> load file -> if not duplicate -> add to playlist -> play the newest song, update button in UI -> set CurrentMedia = new song
+                            // -> set selected item in playlist = new song
+                            handleChangeWhenAddNewFile(newFile, newMedia);
+                        }
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show(MessageType.Error, "Has error when adding media files", @$"{ex.Message}");
+            }
         }
 
         private void OnPreviewMouseDown(object sender, MouseButtonEventArgs e)
@@ -520,9 +561,9 @@ namespace Media_Player_App
 
         private void setVolumeKind(double volume)
         {
-            if(volume == 0 || media.IsMuted)
+            if (volume == 0 || media.IsMuted)
                 Volume.Kind = MahApps.Metro.IconPacks.PackIconMaterialKind.VolumeOff;
-            else if(volume > 0 && volume < 0.3)
+            else if (volume > 0 && volume < 0.3)
                 Volume.Kind = MahApps.Metro.IconPacks.PackIconMaterialKind.VolumeLow;
             else if (volume >= 0.3 && volume <= 0.7)
                 Volume.Kind = MahApps.Metro.IconPacks.PackIconMaterialKind.VolumeMedium;
@@ -535,12 +576,12 @@ namespace Media_Player_App
             var currentMediaIndex = Playlists.SelectedIndex;
             int mediaIndex;
 
-            if(_PlayLists.Count == 1)
+            if (_PlayLists.Count == 1)
             {
                 media.Pause();
                 isMediaPlaying = false;
                 UpdatePlayButton();
-                
+
                 return;
             }
 
@@ -585,7 +626,7 @@ namespace Media_Player_App
         private void Volume_Button_CLick(object sender, RoutedEventArgs e)
         {
             media.IsMuted = !media.IsMuted;
-            setVolumeKind(media.Volume);            
+            setVolumeKind(media.Volume);
         }
 
         private void VolumeProgress_DragStarted(object sender, System.Windows.Controls.Primitives.DragStartedEventArgs e)
@@ -656,7 +697,7 @@ namespace Media_Player_App
             try
             {
                 // serialize top 50 recently played
-                var recentlyPlayedJson = JsonSerializer.Serialize(_RecentlyPlayed.TakeNLast(Utilities.MaxRecentlyPlayed).Select(c=>c.FullPath));
+                var recentlyPlayedJson = JsonSerializer.Serialize(_RecentlyPlayed.TakeNLast(Utilities.MaxRecentlyPlayed).Select(c => c.FullPath));
                 if (recentlyPlayedJson != null)
                 {
                     var fileName = Directory.GetCurrentDirectory() + @$"\\{Utilities.RecentlyPlayed}\\{Utilities.RecentlyPlayed}.json";
@@ -699,8 +740,8 @@ namespace Media_Player_App
         {
             try
             {
-                var selectedRecentSong = (Media) RecentPlaylists.SelectedItem;
-                if (selectedRecentSong!= null)
+                var selectedRecentSong = (Media)RecentPlaylists.SelectedItem;
+                if (selectedRecentSong != null)
                 {
                     _PlayLists.Clear();
                     _PlayLists.Add(selectedRecentSong);
