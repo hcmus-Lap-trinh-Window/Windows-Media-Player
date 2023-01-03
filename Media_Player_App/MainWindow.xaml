@@ -352,7 +352,7 @@
                         </StackPanel>
 
                         <StackPanel Grid.Column="1" HorizontalAlignment="Center" VerticalAlignment="Center">
-                            <StackPanel x:Name="Control_Button_Group" Visibility="Hidden" Orientation="Horizontal" VerticalAlignment="Center" HorizontalAlignment="Center">
+                            <StackPanel x:Name="Control_Button_Group" Visibility="Visible" Orientation="Horizontal" VerticalAlignment="Center" HorizontalAlignment="Center">
                                 <Button Name="Previous_Button" Click="Previous_Button_CLick" Style="{StaticResource playerButton}">
                                     <Icon:PackIconMaterial Kind="SkipPrevious" Style="{StaticResource playerButtonIcon}"/>
                                 </Button>
@@ -368,6 +368,10 @@
                                 <Slider x:Name="slider" VerticalAlignment="Center" Width="370" IsSelectionRangeEnabled="True" Thumb.DragStarted="slideProgress_DragStarted" Thumb.DragCompleted="slideProgress_DragCompleted" ValueChanged="slideProgress_ValueChanged" />
                                 <TextBlock Width="45" x:Name="totalPosition" d:Text="03:05:31" TextAlignment="Left"></TextBlock>
                             </StackPanel>
+                            <Canvas HorizontalAlignment="Center" x:Name="mediaPreviewContain" Visibility="Visible" >
+                                <MediaElement Panel.ZIndex="9999" Height="55" Width="140" Canvas.Left="-70" Canvas.Top="-75" Name="mediaPreview" HorizontalAlignment="Center" LoadedBehavior="Manual" ScrubbingEnabled="True" VerticalAlignment="Center">
+                                </MediaElement>
+                            </Canvas>
                         </StackPanel>
 
                         <StackPanel x:Name="Shuffle_Volume_Group" Visibility="Hidden"  Grid.Column="2" Orientation="Vertical" HorizontalAlignment="Right" VerticalAlignment="Center" Margin="0 0 10 0">

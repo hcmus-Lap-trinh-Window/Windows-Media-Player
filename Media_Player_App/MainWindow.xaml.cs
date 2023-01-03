@@ -610,17 +610,29 @@ namespace Media_Player_App
         private void slideProgress_DragStarted(object sender, System.Windows.Controls.Primitives.DragStartedEventArgs e)
         {
             userIsDraggingTimeSlider = true;
+
+            mediaPreview.Source = CurrentMedia.FullPath;
+            mediaPreviewContain.Visibility = Visibility.Visible;
         }
 
         private void slideProgress_DragCompleted(object sender, System.Windows.Controls.Primitives.DragCompletedEventArgs e)
         {
             userIsDraggingTimeSlider = false;
             media.Position = TimeSpan.FromSeconds(slider.Value);
+
+            mediaPreviewContain.Visibility = Visibility.Hidden;
         }
 
         private void slideProgress_ValueChanged(object sender, RoutedPropertyChangedEventArgs<double> e)
         {
             currentPosition.Text = TimeSpan.FromSeconds(slider.Value).ToString(@"hh\:mm\:ss");
+
+            if(userIsDraggingTimeSlider)
+            {
+                mediaPreview.Position = TimeSpan.FromSeconds(slider.Value);
+                mediaPreview.Play();
+                mediaPreview.Pause();
+            }
         }
 
         private void Volume_Button_CLick(object sender, RoutedEventArgs e)
