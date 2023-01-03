@@ -164,8 +164,7 @@ namespace Media_Player_App
                 //RecentPlaylists.ItemsSource = _RecentlyPlayed.TakeLast(50).Reverse();
                 //SaveRecentlyPlayed();
 
-                needHiddenUI = false;
-                UpdateHiddenUI();
+                UpdateHiddenUI(false);
                 #endregion
 
             }
@@ -209,9 +208,20 @@ namespace Media_Player_App
 
         private void Clear_All_Files_In_Playlist_Btn_Click(object sender, RoutedEventArgs e)
         {
-            _PlayLists.Clear();
-            needHiddenUI = true;
-            UpdateHiddenUI();
+            if (_PlayLists != null && _PlayLists.Count > 0)
+            {
+                MessageBoxResult action = HandyControl.Controls.MessageBox.Show(new MessageBoxInfo()
+                {
+                    Message = "Are you sure to delete all media from current playlist?",
+                    Caption = "Delete all media from current playlist",
+                    Button = MessageBoxButton.YesNo
+                });
+                if (action == MessageBoxResult.Yes)
+                {
+                    _PlayLists.Clear();
+                    UpdateHiddenUI(true);
+                }
+            }
         }
 
         private void Add_Playlist_Button_CLick(object sender, RoutedEventArgs e)
@@ -329,6 +339,11 @@ namespace Media_Player_App
                     isMediaPlaying = true;
                     UpdatePlayButton();
                     CurrentMedia = selectedMedia;
+
+                    // save selected media to recently played
+                    _RecentlyPlayed.Add(selectedMedia);
+                    RecentPlaylists.ItemsSource = _RecentlyPlayed.TakeLast(50).Reverse();
+                    SaveRecentlyPlayed();
                 }
             }
         }
@@ -337,26 +352,33 @@ namespace Media_Player_App
         {
             if (sender != null)
             {
-                Button b = sender as Button;
-                Media deletedMedia = b.CommandParameter as Media;
-                if (deletedMedia != null)
+                MessageBoxResult action = HandyControl.Controls.MessageBox.Show(new MessageBoxInfo()
                 {
-                    if (CurrentMedia == deletedMedia)
+                    Message = "Are you sure to delete this media from playlist?",
+                    Caption = "Delete media from playlist",
+                    Button = MessageBoxButton.YesNo
+                });
+                if (action == MessageBoxResult.Yes)
+                {
+                    Button b = sender as Button;
+                    Media deletedMedia = b.CommandParameter as Media;
+                    if (deletedMedia != null)
                     {
-                        int deletedIndex = _PlayLists.IndexOf(deletedMedia);
-                        if (deletedIndex == _PlayLists.Count - 1)
+                        if (CurrentMedia == deletedMedia)
                         {
-                            needHiddenUI = true;
-                            UpdateHiddenUI();
+                            int deletedIndex = _PlayLists.IndexOf(deletedMedia);
+                            if (deletedIndex == _PlayLists.Count - 1)
+                            {
+                                UpdateHiddenUI(true);
+                            }
+                            else
+                            {
+                                int nextIndex = ++deletedIndex;
+                                Playlists.SelectedIndex = nextIndex;
+                            }
                         }
-                        else
-                        {
-                            int nextIndex = ++deletedIndex;
-                            Playlists.SelectedIndex = nextIndex;
-                        }
+                        _PlayLists.Remove(deletedMedia);
                     }
-                    _PlayLists.Remove(deletedMedia);
-
                 }
 
             }
@@ -722,8 +744,9 @@ namespace Media_Player_App
             }
         }
 
-        private void UpdateHiddenUI()
+        private void UpdateHiddenUI(bool needHiddenUI_)
         {
+            needHiddenUI = needHiddenUI_;
             if (needHiddenUI)
             {
                 media.Source = null;
@@ -758,8 +781,6 @@ namespace Media_Player_App
                     _PlayLists.Clear();
                     _PlayLists.Add(selectedRecentSong);
                     Playlists.SelectedItem = selectedRecentSong;
-                    _RecentlyPlayed.Add(selectedRecentSong);
-                    RecentPlaylists.ItemsSource = _RecentlyPlayed.TakeNLast(50).Reverse();
                 }
             }
             catch (Exception ex)
