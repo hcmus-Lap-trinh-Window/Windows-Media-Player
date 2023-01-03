@@ -24,6 +24,7 @@
     <None Remove="Images\relax-music.png" />
     <None Remove="Images\save.png" />
     <None Remove="Images\shuffle.png" />
+    <None Remove="Images\sound.png" />
     <None Remove="Images\thanh.png" />
   </ItemGroup>
 
@@ -71,6 +72,9 @@
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
     <Content Include="Images\shuffle.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Images\sound.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
     <Content Include="Images\thanh.png">

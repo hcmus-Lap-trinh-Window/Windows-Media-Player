@@ -128,9 +128,7 @@
                                                 <ColumnDefinition  Width="5*"/>
                                                 <ColumnDefinition  Width="*"/>
                                             </Grid.ColumnDefinitions>
-                                            <Button Name="List_Item_Pause_Button" Grid.Column="0" Background="#FFBDDDFF" Foreground="#FFFFFFFF" Style="{StaticResource playerButtonPlaylist}">
-                                                <Icon:PackIconMaterial Kind="Pause" Width="15" Height="15"/>
-                                            </Button>
+                                            <Image Grid.Column="0" Source="/Images/sound.png" RenderOptions.BitmapScalingMode="HighQuality"/>
                                             <Border Grid.Column="1" CornerRadius="10,10,10,10" Width="35" Height="35" Margin="5px" VerticalAlignment="Center" HorizontalAlignment="Center" BorderBrush="#FFBDDDFF" BorderThickness="1,1,1,1">
                                                 <Border.Background>
                                                     <!--<ImageBrush ImageSource="{Binding ImagePath}" RenderOptions.BitmapScalingMode="HighQuality"/>-->
