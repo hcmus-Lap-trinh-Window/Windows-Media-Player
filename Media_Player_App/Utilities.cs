@@ -30,5 +30,9 @@ namespace Media_Player_App
         {
             return list.Skip(Math.Max(0, list.Count() - N));
         }
+        public static string ToPath(this Uri source)
+        {
+            return source.ToString().Replace("file:///", "");
+        }
     }
 }

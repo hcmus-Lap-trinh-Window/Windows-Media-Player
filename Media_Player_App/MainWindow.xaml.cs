@@ -1,5 +1,6 @@
 ﻿using HandyControl.Data;
 using Microsoft.Win32;
+using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
@@ -90,12 +91,13 @@ namespace Media_Player_App
                 var recentlyPlayedJson = File.ReadAllText(recentlyPlayedDirectory);
                 if (recentlyPlayedJson != null)
                 {
-                    var temp = JsonSerializer.Deserialize<List<Uri>>(recentlyPlayedJson);
+                    var temp = JsonConvert.DeserializeObject<List<Uri>>(recentlyPlayedJson);
                     if (temp != null && temp.Count > 0)
                     {
                         foreach (var uri in temp)
                         {
-                            _RecentlyPlayed.Add(new Media(uri.AbsolutePath));
+                            var x = uri.ToString();
+                            _RecentlyPlayed.Add(new Media(uri.ToPath()));
                         }
                         RecentPlaylists.ItemsSource = _RecentlyPlayed.TakeNLast(50).Reverse();
                     }
@@ -104,7 +106,6 @@ namespace Media_Player_App
         }
 
         private void New_File_Button_Click(object sender, RoutedEventArgs e)
-
         {
             try
             {
@@ -164,7 +165,7 @@ namespace Media_Player_App
                 //RecentPlaylists.ItemsSource = _RecentlyPlayed.TakeLast(50).Reverse();
                 //SaveRecentlyPlayed();
 
-                UpdateHiddenUI(false);
+                //UpdateHiddenUI(false);
                 #endregion
 
             }
@@ -187,7 +188,7 @@ namespace Media_Player_App
                 var playListContent = File.ReadAllText(playListDirectory);
                 if (playListContent != null)
                 {
-                    var jsonToPlayList = JsonSerializer.Deserialize<ObservableCollection<Media>>(playListContent);
+                    var jsonToPlayList = JsonConvert.DeserializeObject<ObservableCollection<Media>>(playListContent);
                     if (jsonToPlayList != null)
                     {
                         _PlayLists = new ObservableCollection<Media>();
@@ -235,7 +236,7 @@ namespace Media_Player_App
                     {
                         var playListFileName = playListName + ".json";
                         var playListDirectory = Directory.GetCurrentDirectory() + $@"\\{Utilities.PlayListFolder}\\";
-                        var playListJson = JsonSerializer.Serialize(_PlayLists);
+                        var playListJson = JsonConvert.SerializeObject(_PlayLists);
                         SaveJson(playListDirectory + playListFileName, playListJson);
                         if (!_PlayListComboBox.Contains(playListName))
                         {
@@ -739,7 +740,7 @@ namespace Media_Player_App
             try
             {
                 // serialize top 50 recently played
-                var recentlyPlayedJson = JsonSerializer.Serialize(_RecentlyPlayed.TakeNLast(Utilities.MaxRecentlyPlayed).Select(c => c.FullPath));
+                var recentlyPlayedJson = JsonConvert.SerializeObject(_RecentlyPlayed.TakeNLast(Utilities.MaxRecentlyPlayed).Select(c => c.FullPath));
                 if (recentlyPlayedJson != null)
                 {
                     var fileName = Directory.GetCurrentDirectory() + @$"\\{Utilities.RecentlyPlayed}\\{Utilities.RecentlyPlayed}.json";
@@ -761,21 +762,22 @@ namespace Media_Player_App
                 name.Text = string.Empty;
                 singer.Text = string.Empty;
                 audioImagePath.ImageSource = new BitmapImage(new Uri(@"Images\musical-note.png", UriKind.RelativeOrAbsolute));
+                mediaShow_image.Source = new BitmapImage(new Uri(@"Images\relax-music.png", UriKind.Relative));
+                mediaShow_image.Visibility = Visibility.Visible;
                 Progress_Time.Visibility = Visibility.Hidden;
                 Next_Button.Visibility = Visibility.Hidden;
                 Previous_Button.Visibility = Visibility.Hidden;
                 Play_Button.Visibility = Visibility.Hidden;
-                Shuffle_Button.Visibility = Visibility.Hidden;
-                Volume_Button.Visibility = Visibility.Hidden;
+                Shuffle_Volume_Group.Visibility = Visibility.Hidden;
             }
             else
             {
-                Progress_Time.Visibility = Visibility.Visible;
+                slider.Visibility = Visibility.Visible;
+                slider.Value = 0;
                 Next_Button.Visibility = Visibility.Visible;
                 Previous_Button.Visibility = Visibility.Visible;
                 Play_Button.Visibility = Visibility.Visible;
-                Shuffle_Button.Visibility = Visibility.Visible;
-                Volume_Button.Visibility = Visibility.Visible;
+                Shuffle_Volume_Group.Visibility = Visibility.Visible;
             }
         }
 
