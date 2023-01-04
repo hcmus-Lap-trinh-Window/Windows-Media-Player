@@ -17,6 +17,7 @@ namespace Media_Player_App
         public string? Singer { get; set; }
         public string? ImagePath { get; set; }
         public Uri? FullPath { get; set; }
+        public string FileExtension { get; set; }
         public string? RunTime { get; set; }
         public string? EndTime { get; set; }
         public BitmapImage? Image { get; set; }
@@ -24,7 +25,7 @@ namespace Media_Player_App
         public Media(string filePath)
         {
             var fileInfo = new FileInfo(filePath);
-            if (!fileInfo.Exists)
+            if (!File.Exists(filePath))
             {
                 throw new Exception($"The file {filePath} doesn't exist.");
             }
@@ -32,6 +33,7 @@ namespace Media_Player_App
 
             this.Name = mediaFile.Tag.Title ?? fileInfo.Name;       //  Lấy tên file
             this.FullPath = new Uri(filePath);
+            this.FileExtension = fileInfo.Extension;
 
             #region Lấy thông tin ca sĩ
 

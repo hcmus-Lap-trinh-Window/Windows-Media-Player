@@ -352,7 +352,7 @@
                         </StackPanel>
 
                         <StackPanel Grid.Column="1" HorizontalAlignment="Center" VerticalAlignment="Center">
-                            <StackPanel x:Name="Control_Button_Group" Visibility="Visible" Orientation="Horizontal" VerticalAlignment="Center" HorizontalAlignment="Center">
+                            <StackPanel x:Name="Control_Button_Group" Visibility="Hidden" Orientation="Horizontal" VerticalAlignment="Center" HorizontalAlignment="Center">
                                 <Button Name="Previous_Button" Click="Previous_Button_CLick" Style="{StaticResource playerButton}">
                                     <Icon:PackIconMaterial Kind="SkipPrevious" Style="{StaticResource playerButtonIcon}"/>
                                 </Button>
@@ -365,7 +365,7 @@
                             </StackPanel>
                             <StackPanel x:Name="Progress_Time" Visibility="Hidden" Orientation="Horizontal" Margin=" 0 0 0 5">
                                 <TextBlock Width="45" x:Name="currentPosition" d:Text="00:01" TextAlignment="Right"></TextBlock>
-                                <Slider x:Name="slider" VerticalAlignment="Center" Width="370" IsSelectionRangeEnabled="True" Thumb.DragStarted="slideProgress_DragStarted" Thumb.DragCompleted="slideProgress_DragCompleted" ValueChanged="slideProgress_ValueChanged" />
+                                <Slider x:Name="slider" VerticalAlignment="Center" Width="350" IsSelectionRangeEnabled="True" Thumb.DragStarted="slideProgress_DragStarted" Thumb.DragCompleted="slideProgress_DragCompleted" ValueChanged="slideProgress_ValueChanged" />
                                 <TextBlock Width="45" x:Name="totalPosition" d:Text="03:05:31" TextAlignment="Left"></TextBlock>
                             </StackPanel>
                             <Canvas HorizontalAlignment="Center" x:Name="mediaPreviewContain" Visibility="Visible" >

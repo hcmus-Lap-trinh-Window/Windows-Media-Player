@@ -564,6 +564,14 @@ namespace Media_Player_App
             Progress_Time.Visibility = Visibility.Visible;
             Shuffle_Volume_Group.Visibility = Visibility.Visible;
 
+            if(CurrentMedia.FileExtension == ".mp4")
+            {
+                mediaShow_image.Visibility = Visibility.Hidden;
+            } else
+            {
+                mediaShow_image.Visibility = Visibility.Visible;
+            }
+
             Volume_Progress.Value = media.Volume;
             setVolumeKind(media.Volume);
             totalPosition.Text = TimeSpan.FromSeconds(media.NaturalDuration.TimeSpan.TotalSeconds).ToString(@"hh\:mm\:ss");
