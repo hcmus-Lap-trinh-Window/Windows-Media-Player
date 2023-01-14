@@ -132,14 +132,15 @@ namespace Media_Player_App
                             handleChangeWhenAddNewFile(newFile, newMedia);
                         }
                     }
-                    Playlists.SelectedIndex = 0;
-                    CurrentMedia = (Media) Playlists.SelectedItem;
-                    _RecentlyPlayed.Add(CurrentMedia);
-                    RecentPlaylists.ItemsSource = _RecentlyPlayed.TakeLast(50).Reverse();
-                    SaveRecentlyPlayed();
-                    UpdateHiddenUI(false);
-                    //}
-
+                    if (currentFileCount == 0)
+                    {
+                        Playlists.SelectedIndex = 0;
+                        CurrentMedia = (Media)Playlists.SelectedItem;
+                        _RecentlyPlayed.Add(CurrentMedia);
+                        RecentPlaylists.ItemsSource = _RecentlyPlayed.TakeLast(50).Reverse();
+                        SaveRecentlyPlayed();
+                        UpdateHiddenUI(false);
+                    }
                 }
             }
             catch (Exception ex)
@@ -538,20 +539,17 @@ namespace Media_Player_App
         {
             if (isMediaShuffle)
             {
-                if (isMediaShuffle)
-                {
-                    isMediaShuffle = false;
-                    IsSuffle.Kind = MahApps.Metro.IconPacks.PackIconMaterialKind.ShuffleDisabled;
-                    shuffeMode.Text = "Normal:";
-                }
-                else
-                {
-                    IsSuffle.Kind = MahApps.Metro.IconPacks.PackIconMaterialKind.Shuffle;
-                    isMediaShuffle = true;
-                    shuffeMode.Text = "Shuffle:";
-                }
-                UpdatePlayButton();
+                isMediaShuffle = false;
+                IsSuffle.Kind = MahApps.Metro.IconPacks.PackIconMaterialKind.ShuffleDisabled;
+                shuffeMode.Text = "Normal:";
             }
+            else
+            {
+                IsSuffle.Kind = MahApps.Metro.IconPacks.PackIconMaterialKind.Shuffle;
+                isMediaShuffle = true;
+                shuffeMode.Text = "Shuffle:";
+            }
+            UpdatePlayButton();
         }
 
         private void media_MediaOpened(object sender, RoutedEventArgs e)
