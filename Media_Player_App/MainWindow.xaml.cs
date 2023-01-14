@@ -120,6 +120,7 @@ namespace Media_Player_App
                     var newFileList = screen.FileNames;                         // Get danh sách các file được chọn
                     var _currentPlaying = newFileList[0];                       // Get file đầu tiên trong danh sách
                     FileInfo fileInfo = new FileInfo(_currentPlaying);
+                    var currentFileCount = _PlayLists.Count;
                     foreach (var newFile in newFileList)
                     {
                         Media newMedia = new Media(newFile);
@@ -131,6 +132,14 @@ namespace Media_Player_App
                             handleChangeWhenAddNewFile(newFile, newMedia);
                         }
                     }
+                    Playlists.SelectedIndex = 0;
+                    CurrentMedia = (Media) Playlists.SelectedItem;
+                    _RecentlyPlayed.Add(CurrentMedia);
+                    RecentPlaylists.ItemsSource = _RecentlyPlayed.TakeLast(50).Reverse();
+                    SaveRecentlyPlayed();
+                    UpdateHiddenUI(false);
+                    //}
+
                 }
             }
             catch (Exception ex)
@@ -152,22 +161,10 @@ namespace Media_Player_App
 
                 #region set change in UI
 
-                //media.Source = new Uri(filePath, UriKind.Absolute);
-                ////media.Play();
-
                 Next_Button.IsEnabled = _PlayLists.Count > 1 ? true : false;
                 Previous_Button.IsEnabled = _PlayLists.Count > 1 ? true : false;
 
-                //CurrentMedia = newMedia;
-                //Playlists.SelectedItem = CurrentMedia;
-
-                //_RecentlyPlayed.Add(newMedia);
-                //RecentPlaylists.ItemsSource = _RecentlyPlayed.TakeLast(50).Reverse();
-                //SaveRecentlyPlayed();
-
-                //UpdateHiddenUI(false);
                 #endregion
-
             }
             catch (Exception ex)
             {
@@ -565,10 +562,11 @@ namespace Media_Player_App
             Progress_Time.Visibility = Visibility.Visible;
             Shuffle_Volume_Group.Visibility = Visibility.Visible;
 
-            if(CurrentMedia.FileExtension == ".mp4")
+            if (CurrentMedia.FileExtension == ".mp4")
             {
                 mediaShow_image.Visibility = Visibility.Hidden;
-            } else
+            }
+            else
             {
                 mediaShow_image.Visibility = Visibility.Visible;
             }
@@ -658,7 +656,7 @@ namespace Media_Player_App
         {
             currentPosition.Text = TimeSpan.FromSeconds(slider.Value).ToString(@"hh\:mm\:ss");
 
-            if(userIsDraggingTimeSlider)
+            if (userIsDraggingTimeSlider)
             {
                 mediaPreview.Position = TimeSpan.FromSeconds(slider.Value);
                 mediaPreview.Play();
