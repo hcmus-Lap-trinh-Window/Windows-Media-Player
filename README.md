@@ -86,4 +86,4 @@ Mỗi thành viên đều có thời gian làm việc trung bình từ 21 đến
 |3|Trương Công Thành| 19120660 | 10
 ## **Video demo** <a name="video"></a>
 ***
-Link video: https://studenthcmusedu-my.sharepoint.com/:v:/g/personal/19120540_student_hcmus_edu_vn/EXlFUeXrqYRLsHn3oSGaNXcBB9n337Tv8D5eeX5P_h_oIQ?e=W8hwGR
+Link video: https://studenthcmusedu-my.sharepoint.com/:v:/g/personal/19120540_student_hcmus_edu_vn/EXlFUeXrqYRLsHn3oSGaNXcBB9n337Tv8D5eeX5P_h_oIQ?e=1MN3cF
